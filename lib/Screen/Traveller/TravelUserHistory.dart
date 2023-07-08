@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:transfert_colis_interurbain/Screen/Traveller/TravelerAdd.dart';
 
 import '../../App/Manager/TravelManager.dart';
 import '../../Config/Theme/Theme.dart';
@@ -36,7 +37,7 @@ class TravelUserHistory extends StatelessWidget {
                     const SizedBox(width: 20),
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, "/TravellerAdd");
+                        travelAddDialog(context);
                       },
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(
@@ -67,6 +68,13 @@ class TravelUserHistory extends StatelessWidget {
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     List<Travel> travelData = snapshot.data!;
+
+                    if (travelData.isEmpty) {
+                      return const Center(
+                          child: Text(
+                              "Vous n'avez jamais eu à effectuer de voyage"));
+                    }
+
                     return SingleChildScrollView(
                       child: Column(
                         children: travelData.map((travel) {
@@ -86,5 +94,35 @@ class TravelUserHistory extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void travelAddDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) => AlertDialog(
+              title: Text(
+                "Programmer un voyage".toUpperCase(),
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).primaryColor),
+              ),
+              content: TravellerAdd(),
+              actions: <Widget>[
+                MaterialButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Fermer'),
+                ),
+                MaterialButton(
+                  onPressed: () async {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Enregistrer'),
+                )
+              ],
+            ));
   }
 }

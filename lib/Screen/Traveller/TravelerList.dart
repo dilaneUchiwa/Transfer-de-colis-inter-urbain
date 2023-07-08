@@ -14,6 +14,10 @@ class TravelList extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           List<Travel> travelData = snapshot.data!;
+
+          if (travelData.isEmpty) {
+            return const Center(child: Text("Aucun voyage n'a été programmé"));
+          }
           return SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(8.0),

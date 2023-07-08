@@ -107,9 +107,6 @@ class FirestoreUserRepository implements UserRepository {
   @override
   Future<void> updateUser(UserApp user) async {
     final now = DateTime.now();
-
-    print("User token : ${user.userToken}");
-    
     return await _collectionReference.doc(user.userId).update({
       'userName': user.userName,
       'userSurname': user.userSurname,

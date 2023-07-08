@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:transfert_colis_interurbain/App/Manager/TravelManager.dart';
 import 'package:transfert_colis_interurbain/Utils/Converter.dart';
 
+import '../../Config/Theme/Theme.dart';
 import '../../Data/DataSource/Remote/FirestoreTravelRepository.dart';
 import '../../Domain/Model/Travel.dart';
 import '../../Domain/Model/UserApp.dart';
@@ -23,19 +24,16 @@ class TravellerAdd extends StatefulWidget {
 class _TravellerAddState extends State<TravellerAdd> {
   final _formkey = GlobalKey<FormState>();
 
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-
-  final List<String> items = [
-    'maroua',
-    'garoua',
-    'ngaoundere',
-    'bertoua',
-    'yaounde',
-    'ebolowa',
-    'douala',
-    'buea',
-    'bamenda',
-    'bafoussam',
+  final List<String> itemsVille = ["Douala", "Yaoundé", "Bafoussam"];
+  final List<List<String>> itemsLieux = [
+    ['Bepanda', 'dakar'],
+    ['Biyem assi', 'Tongolo', 'Terminus Mimboman'],
+    ['Ndiang Dam']
+  ];
+  final List<String> itemsAgence = [
+    "Général Express Voyage",
+    "Trésor Voyage",
+    "Binam Voyage",
   ];
 
   Travel? travel;
@@ -43,13 +41,13 @@ class _TravellerAddState extends State<TravellerAdd> {
 
   String? selectedDestination;
 
-  String? QuarterDeparture;
+  String? quarterDeparture;
 
-  String? QuarterDestination;
+  String? quarterDestination;
 
-  String? Agence;
+  String? agence;
 
-  String? Hour;
+  String? hour;
 
   final TextEditingController textEditingController = TextEditingController();
 
@@ -96,397 +94,485 @@ class _TravellerAddState extends State<TravellerAdd> {
     // recuperation des données de l'utilisateur couramment connecté
     final user = Provider.of<UserApp?>(context);
 
-    return Scaffold(
-        appBar: AppBar(
-          title: Text("Add A New Travel"),
-        ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 20,
+    return SizedBox(
+      height: MediaQuery.of(context).size.height * 0.5,
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            InputDecorator(
+              decoration: const InputDecoration(
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.green),
+                  borderRadius: BorderRadius.all(Radius.circular(8.0)),
                 ),
-                Text(
-                  "Travel Description",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.green),
+                  borderRadius: BorderRadius.all(Radius.circular(8.0)),
                 ),
-                SizedBox(
-                  height: 20,
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                  child: InputDecorator(
-                    decoration: const InputDecoration(
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey),
-                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue),
-                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                      ),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
+                contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
+              ),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton2<String>(
+                  isExpanded: true,
+                  hint: Text(
+                    'Ville de départ',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Theme.of(context).hintColor,
                     ),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton2<String>(
-                        isExpanded: true,
-                        hint: Text(
-                          'Select Town Departure',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Theme.of(context).hintColor,
-                          ),
-                        ),
+                  ),
 
-                        items: items
-                            .map((item) => DropdownMenuItem(
-                                  value: item,
-                                  child: Text(
-                                    item,
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                ))
-                            .toList(),
-                        value: selectedDeparture,
-                        onChanged: (value) {
-                          setState(() {
-                            selectedDeparture = value as String;
-                          });
-                        },
-                        buttonStyleData: const ButtonStyleData(
-                          height: 40,
-                          width: 200,
-                        ),
-                        dropdownStyleData: const DropdownStyleData(
-                          maxHeight: 200,
-                        ),
-                        menuItemStyleData: const MenuItemStyleData(
-                          height: 40,
-                        ),
-                        dropdownSearchData: DropdownSearchData(
-                          searchController: textEditingController,
-                          searchInnerWidgetHeight: 50,
-                          searchInnerWidget: Container(
-                            height: 50,
-                            padding: const EdgeInsets.only(
-                              top: 8,
-                              bottom: 4,
-                              right: 8,
-                              left: 8,
-                            ),
-                            child: TextFormField(
-                              expands: true,
-                              maxLines: null,
-                              controller: textEditingController,
-                              decoration: InputDecoration(
-                                isDense: true,
-                                contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                  vertical: 8,
-                                ),
-                                hintText: 'Search for an item...',
-                                labelText: "Town Departure",
-                                hintStyle: const TextStyle(fontSize: 12),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
+                  items: itemsVille
+                      .map((item) => DropdownMenuItem(
+                            value: item,
+                            child: Text(
+                              item,
+                              style: const TextStyle(
+                                fontSize: 14,
                               ),
                             ),
+                          ))
+                      .toList(),
+                  value: selectedDeparture,
+                  onChanged: (value) {
+                    setState(() {
+                      selectedDeparture = value;
+                    });
+                  },
+                  dropdownStyleData: const DropdownStyleData(
+                    maxHeight: 250,
+                  ),
+                  dropdownSearchData: DropdownSearchData(
+                    searchController: textEditingController,
+                    searchInnerWidgetHeight: 50,
+                    searchInnerWidget: Container(
+                      height: 50,
+                      padding: const EdgeInsets.only(
+                        top: 8,
+                        bottom: 4,
+                        right: 8,
+                        left: 8,
+                      ),
+                      child: TextFormField(
+                        expands: true,
+                        maxLines: null,
+                        controller: textEditingController,
+                        decoration: InputDecoration(
+                          isDense: true,
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 8,
                           ),
-                          searchMatchFn: (item, searchValue) {
-                            return (item.value
-                                .toString()
-                                .contains(searchValue));
-                          },
-                        ),
-                        //This to clear the search value when you close the menu
-                        onMenuStateChange: (isOpen) {
-                          if (!isOpen) {
-                            textEditingController.clear();
-                          }
-                        },
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Container(
-                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                  child: TextFormField(
-                    onChanged: (value) => QuarterDeparture = value,
-                    validator: (QuarterDeparture) => QuarterDeparture != null
-                        ? null
-                        : 'Enter Departure Quarter',
-                    decoration: const InputDecoration(
-                      labelText: "Quarter Departure",
-                      hintText: "Exple : Yaounde",
-                      // hintText: "Enter Email",
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                      border: OutlineInputBorder(
-                        // borderSide: BorderSide(width:50),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10.0),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                  child: InputDecorator(
-                    decoration: const InputDecoration(
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey),
-                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue),
-                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                      ),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
-                    ),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton2<String>(
-                        isExpanded: true,
-                        hint: Text(
-                          'Select Town Destination',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Theme.of(context).hintColor,
-                          ),
-                        ),
-
-                        items: items
-                            .map((item) => DropdownMenuItem(
-                                  value: item,
-                                  child: Text(
-                                    item,
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                ))
-                            .toList(),
-                        value: selectedDestination,
-                        onChanged: (value) {
-                          setState(() {
-                            selectedDestination = value as String;
-                          });
-                        },
-                        buttonStyleData: const ButtonStyleData(
-                          height: 40,
-                          width: 200,
-                        ),
-                        dropdownStyleData: const DropdownStyleData(
-                          maxHeight: 200,
-                        ),
-                        menuItemStyleData: const MenuItemStyleData(
-                          height: 40,
-                        ),
-                        dropdownSearchData: DropdownSearchData(
-                          searchController: textEditingController,
-                          searchInnerWidgetHeight: 50,
-                          searchInnerWidget: Container(
-                            height: 50,
-                            padding: const EdgeInsets.only(
-                              top: 8,
-                              bottom: 4,
-                              right: 8,
-                              left: 8,
-                            ),
-                            child: TextFormField(
-                              expands: true,
-                              maxLines: null,
-                              controller: textEditingController,
-                              decoration: InputDecoration(
-                                isDense: true,
-                                contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                  vertical: 8,
-                                ),
-                                hintText: 'Search for an item...',
-                                labelText: "Town Destination",
-                                hintStyle: const TextStyle(fontSize: 12),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                              ),
-                            ),
-                          ),
-                          searchMatchFn: (item, searchValue) {
-                            return (item.value
-                                .toString()
-                                .contains(searchValue));
-                          },
-                        ),
-                        //This to clear the search value when you close the menu
-                        onMenuStateChange: (isOpen) {
-                          if (!isOpen) {
-                            textEditingController.clear();
-                          }
-                        },
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Container(
-                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                  child: TextFormField(
-                    onChanged: (value) => QuarterDestination = value,
-                    validator: (QuarterDestination) =>
-                        QuarterDestination != null
-                            ? null
-                            : 'Enter Destination Quarter',
-                    decoration: const InputDecoration(
-                      labelText: "Quarter Destination",
-                      hintText: "Exple : Douala",
-                      // hintText: "Enter Email",
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                      border: OutlineInputBorder(
-                        // borderSide: BorderSide(width:50),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10.0),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Container(
-                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                  child: TextFormField(
-                    onChanged: (value) => Agence = value,
-                    validator: (Agence) =>
-                        Agence != null ? null : 'Enter Travel Agence',
-                    decoration: const InputDecoration(
-                      labelText: "Agence",
-                      hintText: "Exple : General",
-                      // hintText: "Enter Email",
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                      border: OutlineInputBorder(
-                        // borderSide: BorderSide(width:50),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10.0),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Container(
-                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                  child: Column(children: <Widget>[
-                    TextFormField(
-                      readOnly: true,
-                      onTap: () => _selectDate(context),
-                      decoration: InputDecoration(
-                        suffix: Icon(Icons.calendar_month_rounded),
-                        labelText: "${dateController}",
-                        suffixIcon: Icon(Icons.calendar_month_rounded),
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                        border: const OutlineInputBorder(
-                          // borderSide: BorderSide(width:50),
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(10.0),
+                          hintText: 'Rechercher une ville...',
+                          hintStyle: const TextStyle(fontSize: 15),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
                           ),
                         ),
                       ),
-                      validator: (value) =>
-                          dateController != "" ? null : "Enter Date of Birth",
                     ),
-                  ]),
-                ),
-                const SizedBox(height: 20),
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                  child: TextFormField(
-                    controller: _timeController,
-                    onTap: () {
-                      _selectTime(context);
+                    searchMatchFn: (item, searchValue) {
+                      return (item.value.toString().contains(searchValue));
                     },
-                    readOnly: true,
-                    decoration: const InputDecoration(
-                      labelText: "Select Departure Hour",
-                      suffixIcon: Icon(Icons.timelapse_rounded),
-                      //hintText: "Enter password",
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10.0),
-                        ),
-                      ),
-                    ),
                   ),
+                  //This to clear the search value when you close the menu
+                  onMenuStateChange: (isOpen) {
+                    if (!isOpen) {
+                      textEditingController.clear();
+                    }
+                  },
                 ),
-                SizedBox(
-                  height: 20,
-                ),
-                Container(
-                  height: 50,
-                  width: MediaQuery.of(context).size.width,
-                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      
-                      // if (_formkey.currentState!.validate()) {
-                      //   _formkey.currentState!.save();
-
-                        if (await InternetChecker.checkInternetConnection()) {
-                          travel = Travel.withoutIdAndDate(
-                              selectedDeparture.toString(),
-                              selectedDestination.toString(),
-                              QuarterDeparture.toString(),
-                              QuarterDestination.toString(),
-                              Agence.toString(),
-                              MyConverter.convertStringToDateTime(
-                                  dateController),
-                              _timeController.text,
-                              user!);
-                          await TravelManager().addTravel(travel!);
-                          showNotificationSuccessWithDuration(
-                              context, "Travel add !", 5);
-                              Navigator.pop(context);
-
-                        } else {
-                          showNotificationError(
-                              context, "Pas de connexion internet !");
-                        }
-                      // } else {
-                      //   showNotificationError(context,
-                      //       "Veuillez correctement remplir tout les champs !");
-                      // }
-                    },
-                    child: const Text(
-                      'Add Your Travel',
-                    ),
-                    style: ButtonStyle(
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10)))),
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
-        ));
+            const SizedBox(height: 20),
+            InputDecorator(
+              decoration: const InputDecoration(
+                contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
+              ),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton2<String>(
+                  isExpanded: true,
+                  hint: Text(
+                    'Lieu de départ',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Theme.of(context).hintColor,
+                    ),
+                  ),
+
+                  items: selectedDeparture == null
+                      ? null
+                      : itemsLieux
+                          .elementAt(itemsVille.indexOf(selectedDeparture!))
+                          .map((item) => DropdownMenuItem(
+                                value: item,
+                                child: Text(
+                                  item,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ))
+                          .toList(),
+                  value: quarterDeparture,
+                  onChanged: (value) {
+                    setState(() {
+                      quarterDeparture = value;
+                    });
+                  },
+                  dropdownStyleData: const DropdownStyleData(
+                    maxHeight: 250,
+                  ),
+                  dropdownSearchData: DropdownSearchData(
+                    searchController: textEditingController,
+                    searchInnerWidgetHeight: 50,
+                    searchInnerWidget: Container(
+                      height: 50,
+                      padding: const EdgeInsets.only(
+                        top: 8,
+                        bottom: 4,
+                        right: 8,
+                        left: 8,
+                      ),
+                      child: TextFormField(
+                        expands: true,
+                        maxLines: null,
+                        controller: textEditingController,
+                        decoration: InputDecoration(
+                          isDense: true,
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 8,
+                          ),
+                          hintText: 'Rechercher un lieu...',
+                          hintStyle: const TextStyle(fontSize: 15),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                      ),
+                    ),
+                    searchMatchFn: (item, searchValue) {
+                      return (item.value.toString().contains(searchValue));
+                    },
+                  ),
+                  //This to clear the search value when you close the menu
+                  onMenuStateChange: (isOpen) {
+                    if (!isOpen) {
+                      textEditingController.clear();
+                    }
+                  },
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              child: InputDecorator(
+                decoration: const InputDecoration(
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.red),
+                    borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.red),
+                    borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                  ),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton2<String>(
+                    isExpanded: true,
+                    hint: Text(
+                      "Ville de destination",
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Theme.of(context).hintColor,
+                      ),
+                    ),
+
+                    items: itemsVille
+                        .map((item) => DropdownMenuItem(
+                              value: item,
+                              child: Text(
+                                item,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ))
+                        .toList(),
+                    value: selectedDestination,
+                    onChanged: (value) {
+                      setState(() {
+                        selectedDestination = value as String;
+                      });
+                    },
+
+                    dropdownStyleData: const DropdownStyleData(
+                      maxHeight: 250,
+                    ),
+
+                    dropdownSearchData: DropdownSearchData(
+                      searchController: textEditingController,
+                      searchInnerWidgetHeight: 50,
+                      searchInnerWidget: Container(
+                        height: 50,
+                        padding: const EdgeInsets.only(
+                          top: 8,
+                          bottom: 4,
+                          right: 8,
+                          left: 8,
+                        ),
+                        child: TextFormField(
+                          expands: true,
+                          maxLines: null,
+                          controller: textEditingController,
+                          decoration: InputDecoration(
+                            isDense: true,
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 8,
+                            ),
+                            hintText: 'Rechercher une ville...',
+                            hintStyle: const TextStyle(fontSize: 15),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                        ),
+                      ),
+                      searchMatchFn: (item, searchValue) {
+                        return (item.value.toString().contains(searchValue));
+                      },
+                    ),
+                    //This to clear the search value when you close the menu
+                    onMenuStateChange: (isOpen) {
+                      if (!isOpen) {
+                        textEditingController.clear();
+                      }
+                    },
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            InputDecorator(
+              decoration: const InputDecoration(
+                contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
+              ),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton2<String>(
+                  isExpanded: true,
+                  hint: Text(
+                    'Lieu de destination',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Theme.of(context).hintColor,
+                    ),
+                  ),
+
+                  items: selectedDestination == null
+                      ? null
+                      : itemsLieux
+                          .elementAt(itemsVille.indexOf(selectedDestination!))
+                          .map((item) => DropdownMenuItem(
+                                value: item,
+                                child: Text(
+                                  item,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ))
+                          .toList(),
+                  value: quarterDestination,
+                  onChanged: (value) {
+                    setState(() {
+                      quarterDeparture = value;
+                    });
+                  },
+                  dropdownStyleData: const DropdownStyleData(
+                    maxHeight: 250,
+                  ),
+                  dropdownSearchData: DropdownSearchData(
+                    searchController: textEditingController,
+                    searchInnerWidgetHeight: 50,
+                    searchInnerWidget: Container(
+                      height: 50,
+                      padding: const EdgeInsets.only(
+                        top: 8,
+                        bottom: 4,
+                        right: 8,
+                        left: 8,
+                      ),
+                      child: TextFormField(
+                        expands: true,
+                        maxLines: null,
+                        controller: textEditingController,
+                        decoration: InputDecoration(
+                          isDense: true,
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 8,
+                          ),
+                          hintText: 'Rechercher un lieu...',
+                          hintStyle: const TextStyle(fontSize: 15),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                      ),
+                    ),
+                    searchMatchFn: (item, searchValue) {
+                      return (item.value.toString().contains(searchValue));
+                    },
+                  ),
+                  //This to clear the search value when you close the menu
+                  onMenuStateChange: (isOpen) {
+                    if (!isOpen) {
+                      textEditingController.clear();
+                    }
+                  },
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            InputDecorator(
+              decoration: const InputDecoration(
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.yellow),
+                  borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.yellow),
+                  borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                ),
+                contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
+              ),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton2<String>(
+                  isExpanded: true,
+                  hint: Text(
+                    'Agence de voyage',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Theme.of(context).hintColor,
+                    ),
+                  ),
+
+                  items: itemsAgence
+                      .map((item) => DropdownMenuItem(
+                            value: item,
+                            child: Text(
+                              item,
+                              style: const TextStyle(
+                                fontSize: 14,
+                              ),
+                            ),
+                          ))
+                      .toList(),
+                  value: agence,
+                  onChanged: (value) {
+                    setState(() {
+                      agence = value;
+                    });
+                  },
+                  dropdownStyleData: const DropdownStyleData(
+                    maxHeight: 250,
+                  ),
+                  dropdownSearchData: DropdownSearchData(
+                    searchController: textEditingController,
+                    searchInnerWidgetHeight: 50,
+                    searchInnerWidget: Container(
+                      height: 50,
+                      padding: const EdgeInsets.only(
+                        top: 8,
+                        bottom: 4,
+                        right: 8,
+                        left: 8,
+                      ),
+                      child: TextFormField(
+                        expands: true,
+                        maxLines: null,
+                        controller: textEditingController,
+                        decoration: InputDecoration(
+                          isDense: true,
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 8,
+                          ),
+                          hintText: 'Rechercher une agence...',
+                          hintStyle: const TextStyle(fontSize: 15),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                      ),
+                    ),
+                    searchMatchFn: (item, searchValue) {
+                      return (item.value.toString().contains(searchValue));
+                    },
+                  ),
+                  //This to clear the search value when you close the menu
+                  onMenuStateChange: (isOpen) {
+                    if (!isOpen) {
+                      textEditingController.clear();
+                    }
+                  },
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Container(
+              child: Column(children: <Widget>[
+                TextFormField(
+                  initialValue: _selectedDate==null?null:_selectedDate.toString(),
+                  readOnly: true,
+                  onTap: () => _selectDate(context),
+                  decoration: const InputDecoration(
+                    labelText: "Date",
+                    //suffix: Icon(Icons.calendar_month_rounded),
+                    suffixIcon: Icon(Icons.calendar_month_rounded),
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(10.0),
+                      ),
+                    ),
+                  ),
+                ),
+              ]),
+            ),
+            const SizedBox(height: 20),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              child: TextFormField(
+                controller: _timeController,
+                onTap: () {
+                  _selectTime(context);
+                },
+                readOnly: true,
+                decoration: const InputDecoration(
+                  labelText: "Heure",
+                  suffixIcon: Icon(Icons.timelapse_rounded),
+                  //hintText: "Enter password",
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10.0),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
