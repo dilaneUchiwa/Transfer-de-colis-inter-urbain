@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1002100818111",
+    "project_id": "colistransferpfe",
+    "storage_bucket": "colistransferpfe.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1002100818111:android:b4dbb2d3d87488ae93060a",
+        "android_client_info": {
+          "package_name": "com.example.transfert_colis_interurbain"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2IAKcRxdyOoILB5EAwezXhvjiAG6bis8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
