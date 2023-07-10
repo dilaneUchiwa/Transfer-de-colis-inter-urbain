@@ -64,17 +64,18 @@ class MailerService {
     int validationCode = Generator.generateSixDigitNumber();
     if (await InternetChecker.checkInternetConnection()) {
       MailerService.sendMail(dest, "Your Colis accept by traveller",
-          "<h3 style=\"text-align: center;\">Transfer of colis:${transfert.package.packageDescription} by ${transfert.travel.user.userName} ${transfert.travel.user.userSurname} was accept </h3></br><b><h1 style=\"text-align: center;\">${transfert.travel.travelDate} (${transfert.travel.travelMoment}) at ${transfert.travel.agence}(${transfert.travel.quarterDeparture})</h1></b>");
+          "<h3 style=\"text-align: center;\">Transfer of colis:${transfert.package.packageDescription} by ${transfert.travel.user.userName} ${transfert.travel.user.userSurname} was <p style=\"color:green;\">accept</p> </h3></br><b><h1 style=\"text-align: center;\">${transfert.travel.travelDate.toString().substring(0, 11)} (${transfert.travel.travelMoment}) at ${transfert.travel.agence}(${transfert.travel.quarterDeparture})</h1></b>");
       return validationCode;
     } else {
       return 0;
     }
   }
+
   static Future<int> sendColisReject(String dest, Transfert transfert) async {
     int validationCode = Generator.generateSixDigitNumber();
     if (await InternetChecker.checkInternetConnection()) {
       MailerService.sendMail(dest, "Your Colis reject by traveller",
-          "<h3 style=\"text-align: center;\">Transfer of colis:${transfert.package.packageDescription} by ${transfert.travel.user.userName} ${transfert.travel.user.userSurname} was reject</h1></b>");
+          "<h3 style=\"text-align: center;\">Transfer of colis:${transfert.package.packageDescription} by ${transfert.travel.user.userName} ${transfert.travel.user.userSurname} was </h1> </br><p style=\"color:red;\">reject</p></b></br>");
       return validationCode;
     } else {
       return 0;

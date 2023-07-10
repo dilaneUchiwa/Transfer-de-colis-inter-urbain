@@ -16,6 +16,11 @@ class TransfertManager {
     return await _firestoreTransfertRepository.updateTransfert(transfert);
   }
 
+  Future<void> updateTransfertReceiverAdd(
+      Transfert transfert, String id) async {
+    return await _firestoreTransfertRepository.updateTransfert(transfert);
+  }
+
   Future<Transfert?> getTransfertById(String id) async {
     return await _firestoreTransfertRepository.getTransfertById(id);
   }

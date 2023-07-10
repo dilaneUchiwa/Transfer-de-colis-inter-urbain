@@ -5,6 +5,7 @@ abstract class TransfertRepository {
   Future<Transfert?> getTransfertById(String id);
   Future<Transfert?> getTransfertByCode(String code); 
   Future<void> updateTransfert(Transfert transfert);
+   Future<void> updateTransfertReceiverAdd(Transfert transfert,String id);
   Future<void> updateTransfertSetCode(Transfert transfert, int code);
   Future<void> updateTransfertAccept(Transfert transfert);
   Future<void> updateTransfertReject(Transfert transfert);

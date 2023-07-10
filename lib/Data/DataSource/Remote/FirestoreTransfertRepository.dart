@@ -165,7 +165,7 @@ class FirestoreTransfertRepository implements TransfertRepository {
   Future<void> updateTransfert(Transfert transfert) {
     return _collectionReference.doc(transfert.transfertId).update({
       'travelId': transfert.travel.travelId,
-      'paymentId': transfert.payment.paymentId,
+      //'paymentId': transfert.payment.paymentId,
       'packageId': transfert.package.packageId,
       'ReceiverId': transfert.receiver.userId,
       'finish': transfert.isfinish,
@@ -179,6 +179,12 @@ class FirestoreTransfertRepository implements TransfertRepository {
   Future<void> updateTransfertRead(Transfert transfert) {
     return _collectionReference.doc(transfert.transfertId).update({
       'read': true,
+    });
+  }
+
+  Future<void> updateTransfertReceiverAdd(Transfert transfert, String id) {
+    return _collectionReference.doc(transfert.transfertId).update({
+      'ReceiverId': id,
     });
   }
 

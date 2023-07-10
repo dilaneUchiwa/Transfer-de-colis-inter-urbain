@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:transfert_colis_interurbain/Screen/Receiver/ReceiverUserHistory.dart';
+import 'package:transfert_colis_interurbain/Screen/Sender/SenderList.dart';
 import 'package:transfert_colis_interurbain/Screen/Traveller/TravelerList.dart';
 
 import '../App/Manager/UserManager.dart';
@@ -76,6 +77,7 @@ class _HomePageState extends State<HomePage> {
             children: const [
               TravelList(),
               TravelUserHistory(),
+              SenderList(),
               ReceiverUserHistory()
             ]),
         bottomNavigationBar: BottomNavigationBar(
