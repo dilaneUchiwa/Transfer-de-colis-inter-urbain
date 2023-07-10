@@ -3,17 +3,24 @@ import '../../Domain/Model/UserApp.dart';
 
 class Travel {
   String? _travelId;
-  String _travelDeparture;
-  String _travelDestination;
-  String _quarterDeparture;
-  String _quarterDestination;
-  String _agence;
-  DateTime _travelDate;
-  String _travelMoment;
-  UserApp _user;
+  String? _travelDeparture;
+  String? _travelDestination;
+  String? _quarterDeparture;
+  String? _quarterDestination;
+  String? _agence;
+  DateTime? _travelDate;
+  String? _travelMoment;
+  UserApp? _user;
   DateTime? _timestamp;
 
-  
+  Travel.empty() {
+    _travelDeparture = null;
+    _travelDestination = ' ';
+    _quarterDeparture = ' ';
+    _quarterDestination = ' ';
+    _agence = ' ';
+  }
+
   Travel(
       this._travelId,
       this._travelDeparture,
@@ -36,49 +43,49 @@ class Travel {
       this._travelMoment,
       this._user);
 
-  UserApp get user => _user;
+  UserApp get user => _user!;
 
   set user(UserApp value) {
     _user = value;
   }
 
-  String get travelMoment => _travelMoment;
+  String get travelMoment => _travelMoment!;
 
   set travelMoment(String value) {
     _travelMoment = value;
   }
 
-  DateTime get travelDate => _travelDate;
+  DateTime get travelDate => _travelDate!;
 
   set travelDate(DateTime value) {
     _travelDate = value;
   }
 
-  String get travelDestination => _travelDestination;
+  String get travelDestination => _travelDestination!;
 
   set travelDestination(String value) {
     _travelDestination = value;
   }
 
-  String get travelDeparture => _travelDeparture;
+  String get travelDeparture => _travelDeparture!;
 
   set travelDeparture(String value) {
     _travelDeparture = value;
   }
 
-  String get quarterDestination => _quarterDestination;
+  String get quarterDestination => _quarterDestination!;
 
   set quarterDestination(String value) {
     _quarterDestination = value;
   }
 
-  String get quarterDeparture => _quarterDeparture;
+  String get quarterDeparture => _quarterDeparture!;
 
   set quarterDeparture(String value) {
     _quarterDeparture = value;
   }
 
-  String get agence => _agence;
+  String get agence => _agence!;
 
   set agence(String value) {
     _agence = value;

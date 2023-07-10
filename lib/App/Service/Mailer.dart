@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
+import 'package:transfert_colis_interurbain/Domain/Model/Transfert.dart';
 
 import '../../Config/AppConfig.dart';
 import '../../Utils/Generator.dart';
@@ -42,8 +43,7 @@ class MailerService {
         print('Problem: ${p.code}: ${p.msg}');
       }
       return null;
-    }
-    on SocketException catch (e) {
+    } on SocketException catch (e) {
       return null;
     }
     // DONE
@@ -54,6 +54,27 @@ class MailerService {
     if (await InternetChecker.checkInternetConnection()) {
       MailerService.sendMail(dest, "Your verification code",
           "<h3 style=\"text-align: center;\">Your verification code is </h3></br><b><h1 style=\"text-align: center;\">$validationCode</h1></b>");
+      return validationCode;
+    } else {
+      return 0;
+    }
+  }
+
+  static Future<int> sendColisAccept(String dest, Transfert transfert) async {
+    int validationCode = Generator.generateSixDigitNumber();
+    if (await InternetChecker.checkInternetConnection()) {
+      MailerService.sendMail(dest, "Your Colis accept by traveller",
+          "<h3 style=\"text-align: center;\">Transfer of colis:${transfert.package.packageDescription} by ${transfert.travel.user.userName} ${transfert.travel.user.userSurname} was accept </h3></br><b><h1 style=\"text-align: center;\">${transfert.travel.travelDate} (${transfert.travel.travelMoment}) at ${transfert.travel.agence}(${transfert.travel.quarterDeparture})</h1></b>");
+      return validationCode;
+    } else {
+      return 0;
+    }
+  }
+  static Future<int> sendColisReject(String dest, Transfert transfert) async {
+    int validationCode = Generator.generateSixDigitNumber();
+    if (await InternetChecker.checkInternetConnection()) {
+      MailerService.sendMail(dest, "Your Colis reject by traveller",
+          "<h3 style=\"text-align: center;\">Transfer of colis:${transfert.package.packageDescription} by ${transfert.travel.user.userName} ${transfert.travel.user.userSurname} was reject</h1></b>");
       return validationCode;
     } else {
       return 0;

@@ -52,7 +52,7 @@ class MyApp extends StatelessWidget {
         "/AdministrateurPanel": (context) => AdministrateurPanel(),
         "/TravellerAdd": (context) => TravellerAdd() ,
         "/ReceiverAdd": (context) => ReceiverAdd() ,
-        "/AcceptRejectPackage":(context)=>NotificationPage()
+        "/NotificationPage":(context)=>NotificationPage(),
         
       },
     );

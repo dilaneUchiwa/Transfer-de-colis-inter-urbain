@@ -16,8 +16,12 @@ class TransfertManager {
     return await _firestoreTransfertRepository.updateTransfert(transfert);
   }
 
-  Future<Transfert> getTransfertById(String id) async {
+  Future<Transfert?> getTransfertById(String id) async {
     return await _firestoreTransfertRepository.getTransfertById(id);
+  }
+
+  Future<Transfert?> getTransfertByCode(String code) {
+    return _firestoreTransfertRepository.getTransfertByCode(code);
   }
 
   Future<void> updateTransfertRead(Transfert transfert) async {
@@ -32,6 +36,10 @@ class TransfertManager {
     return await _firestoreTransfertRepository.updateTransfertAccept(transfert);
   }
 
+  Future<void> updateTransfertReject(Transfert transfert) async {
+    return await _firestoreTransfertRepository.updateTransfertReject(transfert);
+  }
+
   Future<void> updateTransfertSetCode(Transfert transfert, int code) async {
     return await _firestoreTransfertRepository.updateTransfertSetCode(
         transfert, code);
@@ -41,10 +49,6 @@ class TransfertManager {
     return _firestoreTransfertRepository.getTransferts();
   }
 
-  Stream<List<Transfert>> getTransfertByCode(String code) {
-    return _firestoreTransfertRepository.getTransfertByCode(code);
-  }
-
   Stream<List<Transfert>> getUserSenderTansferts(String userId) {
     return _firestoreTransfertRepository.getUserSenderTansferts(userId);
   }
@@ -52,17 +56,20 @@ class TransfertManager {
   Stream<List<Transfert>> getUserTravellerTansferts(String userId) {
     return _firestoreTransfertRepository.getUserTravellerTansferts(userId);
   }
-    Stream<List<Transfert>> getUserReceiverTansferts(String userId) {
+
+  Stream<List<Transfert>> getUserReceiverTansferts(String userId) {
     return _firestoreTransfertRepository.getUserReceiverTansferts(userId);
   }
-  Stream<int> getTravellerUnReadTransferCount(String id){
-   return _firestoreTransfertRepository.getTravellerUnReadTransferCount(id); 
-  }
-  Stream<int> getTravellerTransferCount(String id){
-   return _firestoreTransfertRepository.getTravellerTransferCount(id); 
-  }
-   Stream<int> getSenderTransferCount(String id){
-   return _firestoreTransfertRepository.getSenderTransferCount(id); 
+
+  Stream<int> getTravellerUnReadTransferCount(String id) {
+    return _firestoreTransfertRepository.getTravellerUnReadTransferCount(id);
   }
 
+  Stream<int> getTravellerTransferCount(String id) {
+    return _firestoreTransfertRepository.getTravellerTransferCount(id);
+  }
+
+  Stream<int> getSenderTransferCount(String id) {
+    return _firestoreTransfertRepository.getSenderTransferCount(id);
+  }
 }

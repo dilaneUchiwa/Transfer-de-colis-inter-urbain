@@ -341,14 +341,11 @@ class _PackageDescriptionState extends State<PackageDescription> {
                                                 ),
                                                 MaterialButton(
                                                   onPressed: () async {
+
                                                     package.travelId =
                                                         widget.travel.travelId;
-
-                                                    // package.userReceiver =
-                                                    //     widget
-                                                    //         .travel.user;
-
                                                     package.userSender = user!;
+
                                                     if (await InternetChecker
                                                         .checkInternetConnection()) {
                                                       await PackagesManager()
@@ -386,7 +383,7 @@ class _PackageDescriptionState extends State<PackageDescription> {
                                                                               Center(
                                                                             child:
                                                                                 Text(
-                                                                              "Une notification a été envoyé à ${widget.travel.user.userName} pour brsoin de transfert de votre colis . Il vous repondra dans un delai de 30 min  !",
+                                                                              "Une notification a été envoyé à ${widget.travel.user.userName} pour besoin de transfert de votre colis . Il vous repondra dans un delai de 30 min  !",
                                                                             ),
                                                                           )),
                                                                   actions: <

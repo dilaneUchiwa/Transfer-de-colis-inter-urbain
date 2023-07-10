@@ -9,9 +9,11 @@ class Transfert {
   Payment? _payment;
   Packages _pack;
   UserApp? _receiver;
+  int _code=0;
   bool _finish = false;
   bool _read = false;
   bool _accept = false;
+  bool _reject = false;
   DateTime? _createdAt;
   DateTime? _receiptAt;
 
@@ -21,13 +23,16 @@ class Transfert {
       this._payment,
       this._pack,
       this._receiver,
+      this._code,
       this._finish,
       this._read,
       this._accept,
+      this._reject,
       this._createdAt,
       this._receiptAt);
 
-  Transfert.withoutIdAndDateTime(this._travel, this._payment, this._pack, this._receiver);
+  Transfert.withoutIdAndDateTime(
+      this._travel, this._payment, this._pack, this._receiver);
 
   Packages get package => _pack;
 
@@ -67,14 +72,20 @@ class Transfert {
 
   bool get isRead => _read;
 
-  set Read(bool value) {
+  set read(bool value) {
     _read = value;
   }
 
   bool get isAccept => _accept;
 
-  set Accept(bool value) {
+  set accept(bool value) {
     _accept = value;
+  }
+
+  bool get isReject => _reject;
+
+  set reject(bool value) {
+    _reject = value;
   }
 
   DateTime get createdAT => _createdAt!;
@@ -88,4 +99,12 @@ class Transfert {
   set receiptAT(DateTime value) {
     _receiptAt = value;
   }
+
+int get code => _code;
+
+  set code(int value) {
+    _code = value;
+  }
+
+
 }

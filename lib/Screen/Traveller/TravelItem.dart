@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:transfert_colis_interurbain/Config/Theme/Theme.dart';
 import 'package:transfert_colis_interurbain/Domain/Model/Travel.dart';
 import 'package:transfert_colis_interurbain/Screen/Package/PackageDescription.dart';
+import 'package:transfert_colis_interurbain/Screen/User/UserProfil.dart';
 import 'package:transfert_colis_interurbain/Utils/Converter.dart';
 
 class TravelItem extends StatelessWidget {
@@ -81,9 +82,9 @@ class TravelItem extends StatelessWidget {
                       ],
                     ),
                     onTap: () {
-                      // Navigator.of(context).push(MaterialPageRoute(
-                      //     builder: (BuildContext context) =>
-                      //         ProjectPage(projet, false)));
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              UserProfil(user: travel.user, admin: false)));
                     }),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -94,7 +95,7 @@ class TravelItem extends StatelessWidget {
                         Text("Horaire ",
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 14)),
-                        Icon(Icons.watch_later_outlined),
+                        //Icon(Icons.watch_later_outlined),
                         Text(" : "),
                       ],
                     ),
@@ -117,12 +118,12 @@ class TravelItem extends StatelessWidget {
                   children: [
                     Row(children: const [
                       SizedBox(width: 10),
-                      Text("Départ ",
+                      Text("Départ  ",
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 14,
                               color: Colors.grey)),
-                      Icon(Icons.airplanemode_active_outlined),
+                      //Icon(Icons.airplanemode_active_outlined),
                       Text(" : "),
                     ]),
                     Row(
@@ -146,7 +147,7 @@ class TravelItem extends StatelessWidget {
                                 fontWeight: FontWeight.bold,
                                 fontSize: 14,
                                 color: Colors.black)),
-                        Icon(Icons.airport_shuttle_sharp),
+                        //Icon(Icons.airport_shuttle_sharp),
                         Text(" : "),
                       ],
                     ),

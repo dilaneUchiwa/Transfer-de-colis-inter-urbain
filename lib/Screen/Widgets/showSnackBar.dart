@@ -8,7 +8,7 @@ void showNotification(BuildContext context, String message) {
 void showNotificationError(BuildContext context, String message) {
   ScaffoldMessenger.of(context).showSnackBar(
   SnackBar(
-    backgroundColor: Colors.red,
+    backgroundColor: Colors.red.shade500,
     content: Text(
       message,
       style: const TextStyle(
@@ -30,7 +30,7 @@ void showNotificationError(BuildContext context, String message) {
 void showNotificationSuccess(BuildContext context, String message) {
   ScaffoldMessenger.of(context).showSnackBar(
   SnackBar(
-    backgroundColor: Colors.green,
+    backgroundColor: Colors.green.shade500,
     content: Text(
       message,
       style: const TextStyle(
@@ -51,7 +51,7 @@ void showNotificationSuccess(BuildContext context, String message) {
 void showNotificationSuccessWithDuration(BuildContext context, String message,int duration) {
   ScaffoldMessenger.of(context).showSnackBar(
   SnackBar(
-    backgroundColor: Colors.green,
+    backgroundColor: Colors.green.shade500,
     content: Text(
       message,
       style: const TextStyle(

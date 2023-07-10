@@ -15,14 +15,10 @@ class Generator {
     return randomNumber;
   }
 
- int generateTransferCode() {
-  var now = DateTime.now();
-  var code = int.parse(
-    now.millisecond.toString().padLeft(3, '0') +
-    now.second.toString().padLeft(2, '0') +
-    now.minute.toString().padLeft(2, '0') +
-    ((now.hour * 60 + now.minute) % 1000).toString().padLeft(3, '0')
-  );
-  return code;
+ static int generateTransferCode() {
+    int now = DateTime.now().microsecondsSinceEpoch;
+    int code = int.parse( (now % (pow(10, 6))).toString());
+
+    return code;
 }
 }

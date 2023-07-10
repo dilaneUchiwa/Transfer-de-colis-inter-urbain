@@ -6,6 +6,8 @@ import '../../App/Manager/TravelManager.dart';
 import '../../Config/Theme/Theme.dart';
 import '../../Domain/Model/Travel.dart';
 import '../../Domain/Model/UserApp.dart';
+import '../../Utils/InternetChecker.dart';
+import '../Widgets/showSnackBar.dart';
 import 'TravelItem.dart';
 import 'TravelUserItem.dart';
 
@@ -112,13 +114,29 @@ class TravelUserHistory extends StatelessWidget {
               actions: <Widget>[
                 MaterialButton(
                   onPressed: () {
+                    TravellerAdd.travel != null;
                     Navigator.pop(context);
                   },
                   child: const Text('Fermer'),
                 ),
                 MaterialButton(
                   onPressed: () async {
-                    Navigator.pop(context);
+                    // if (_formkey.currentState!.validate()) {
+                    //   _formkey.currentState!.save();
+
+                    if (await InternetChecker.checkInternetConnection()) {
+                      //await TravelManager().addTravel(TravellerAdd.travel!);
+                      Navigator.pop(context);
+                      showNotificationSuccessWithDuration(
+                          context, "Votre voyage a été enregistré !", 5);
+                    } else {
+                      showNotificationError(
+                          context, "Pas de connexion internet !");
+                    }
+                    // } else {
+                    //   showNotificationError(context,
+                    //       "Veuillez correctement remplir tout les champs !");
+                    // }
                   },
                   child: const Text('Enregistrer'),
                 )

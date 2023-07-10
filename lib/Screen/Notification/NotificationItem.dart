@@ -6,15 +6,15 @@ import '../../Domain/Model/Transfert.dart';
 import '../../Domain/Model/UserApp.dart';
 import 'NotificationMessageItem.dart';
 
-class SeeNotification extends StatefulWidget {
+class NotificationItem extends StatefulWidget {
   Transfert transfert;
-  SeeNotification(this.transfert, {super.key});
+  NotificationItem(this.transfert, {super.key});
 
   @override
-  State<SeeNotification> createState() => _SeeNotificationState();
+  State<NotificationItem> createState() => _NotificationItemState();
 }
 
-class _SeeNotificationState extends State<SeeNotification> {
+class _NotificationItemState extends State<NotificationItem> {
   @override
   Widget build(BuildContext context) {
     //final user = Provider.of<UserApp?>(context);
@@ -23,12 +23,13 @@ class _SeeNotificationState extends State<SeeNotification> {
       elevation: 1,
       shadowColor: Colors.black,
       shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
         children: [
           Container(
-              color: widget.transfert.isRead ? Colors.white : Colors.grey.shade400,
+              color:
+                  widget.transfert.isRead ? Colors.white : Colors.grey.shade400,
               child: ListTileTheme(
                 child: ListTile(
                     minVerticalPadding: 8,
@@ -56,6 +57,9 @@ class _SeeNotificationState extends State<SeeNotification> {
                     ),
                     onTap: () {
                       if (!widget.transfert.isRead) {
+                        setState(() {
+                          widget.transfert.read = true;
+                        });
                         FirestoreTransfertRepository()
                             .updateTransfertRead(widget.transfert);
                       }

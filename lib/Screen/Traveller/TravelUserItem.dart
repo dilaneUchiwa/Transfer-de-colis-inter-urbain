@@ -44,7 +44,7 @@ class TravelUserItem extends StatelessWidget {
                       Text("Horaire ",
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 14)),
-                      Icon(Icons.watch_later_outlined),
+                      //Icon(Icons.watch_later_outlined),
                       Text(" : "),
                     ],
                   ),
@@ -65,12 +65,12 @@ class TravelUserItem extends StatelessWidget {
                 children: [
                   Row(children: const [
                     SizedBox(width: 10),
-                    Text("Départ ",
+                    Text("Départ  ",
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 14,
                             color: Colors.grey)),
-                    Icon(Icons.airplanemode_active_outlined),
+                    //Icon(Icons.airplanemode_active_outlined),
                     Text(" : "),
                   ]),
                   Row(
@@ -93,7 +93,7 @@ class TravelUserItem extends StatelessWidget {
                               fontWeight: FontWeight.bold,
                               fontSize: 14,
                               color: Colors.black)),
-                      Icon(Icons.airport_shuttle_sharp),
+                      //Icon(Icons.airport_shuttle_sharp),
                       Text(" : "),
                     ],
                   ),

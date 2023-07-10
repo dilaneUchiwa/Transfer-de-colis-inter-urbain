@@ -24,18 +24,20 @@ class FirestoreTransfertRepository implements TransfertRepository {
     PaymentManager paymentManager = PaymentManager();
     PackagesManager packagesManager = PackagesManager();
 
-    final receiver =documentSnapshot.get('ReceiverId')==null?null:
-        await userManager.getUserById(documentSnapshot.get('ReceiverId'));
+    final receiver = documentSnapshot.get('ReceiverId') == null
+        ? null
+        : await userManager.getUserById(documentSnapshot.get('ReceiverId'));
 
     final travel =
         await travelManager.getTravelById(documentSnapshot.get('travelId'));
 
-    final payment =documentSnapshot.get('paymentId')==null?null:
-        await paymentManager.getPaymentById(documentSnapshot.get('paymentId'));
+    final payment = documentSnapshot.get('paymentId') == null
+        ? null
+        : await paymentManager
+            .getPaymentById(documentSnapshot.get('paymentId'));
 
     final pack =
         await packagesManager.getPackageById(documentSnapshot.get('packageId'));
-
 
     final receiptAt = documentSnapshot.get('receiptAt') == null
         ? null
@@ -43,17 +45,19 @@ class FirestoreTransfertRepository implements TransfertRepository {
             documentSnapshot.get('receiptAt'));
 
     final transfert = Transfert(
-      documentSnapshot.id,
-      travel,
-      payment,
-      pack,
-      receiver,
-      documentSnapshot.get('finish'),
-      documentSnapshot.get('read'),
-      documentSnapshot.get('accept'),
-      MyConverter.convertTimestampToDateTime(documentSnapshot.get('createdAt')),
-      receiptAt
-    );
+        documentSnapshot.id,
+        travel,
+        payment,
+        pack,
+        receiver,
+        documentSnapshot.get('code'),
+        documentSnapshot.get('finish'),
+        documentSnapshot.get('read'),
+        documentSnapshot.get('accept'),
+        documentSnapshot.get('reject'),
+        MyConverter.convertTimestampToDateTime(
+            documentSnapshot.get('createdAt')),
+        receiptAt);
     return transfert;
   }
 
@@ -74,19 +78,20 @@ class FirestoreTransfertRepository implements TransfertRepository {
   //   }).then((DocumentReference doc) => transfert.transfertId = doc.id);
   // }
 
- @override
+  @override
   Future<void> addTransfert(Transfert transfert) {
     return _collectionReference.add({
       'travelId': transfert.travel.travelId,
-      'code': null,
+      'code': 0,
       'paymentId': null,
       'packageId': transfert.package.packageId,
       'ReceiverId': null,
-      'TravellerId':transfert.travel.user.userId,
+      'TravellerId': transfert.travel.user.userId,
       'SenderId': transfert.travel.user.userId,
       'finish': false,
       'read': false,
       'accept': false,
+      'reject': false,
       'createdAt': DateTime.now(),
       'receiptAt': null
     }).then((DocumentReference doc) => transfert.transfertId = doc.id);
@@ -102,7 +107,8 @@ class FirestoreTransfertRepository implements TransfertRepository {
                   return documentsnapshotToTransfert(doc);
                 }).toList()));
   }
-    @override
+
+  @override
   Stream<List<Transfert>> getUserReceiverTansferts(String userId) {
     return _collectionReference
         .where("ReceiverId", isEqualTo: userId)
@@ -125,26 +131,26 @@ class FirestoreTransfertRepository implements TransfertRepository {
   }
 
   @override
-  Future<Transfert> getTransfertById(String id) async {
+  Future<Transfert?> getTransfertById(String id) async {
     final snapshot = await _collectionReference.doc(id).get();
     if (!snapshot.exists) {
-      throw FirebaseException(
-          message: 'Transfert with id $id does not exist',
-          code: 'not-found',
-          plugin: '');
+      return null;
     }
     return documentsnapshotToTransfert(snapshot);
   }
 
   @override
-  Stream<List<Transfert>> getTransfertByCode(String code) {
-    return _collectionReference
-        .where("code", isEqualTo: code)
-        .snapshots()
-        .asyncMap(
-            (snapshot) async => Future.wait(snapshot.docs.map((doc) async {
-                  return documentsnapshotToTransfert(doc);
-                }).toList()));
+  Future<Transfert?> getTransfertByCode(String code) async {
+    QuerySnapshot snapshot = await _collectionReference
+        .where("code", isEqualTo: int.parse(code))
+        .where("finish", isEqualTo: false)
+        .get();
+
+    if (snapshot.docs.isEmpty) {
+      return null;
+    }
+
+    return documentsnapshotToTransfert(snapshot.docs.first);
   }
 
   @override
@@ -164,6 +170,7 @@ class FirestoreTransfertRepository implements TransfertRepository {
       'ReceiverId': transfert.receiver.userId,
       'finish': transfert.isfinish,
       'read': transfert.isRead,
+      'reject': transfert.isReject,
       'accept': transfert.isAccept,
       'createdAt': transfert.createdAT
     });
@@ -187,9 +194,15 @@ class FirestoreTransfertRepository implements TransfertRepository {
     });
   }
 
+  Future<void> updateTransfertReject(Transfert transfert) {
+    return _collectionReference.doc(transfert.transfertId).update({
+      'reject': true,
+    });
+  }
+
   Future<void> updateTransfertSetCode(Transfert transfert, int code) {
     return _collectionReference.doc(transfert.transfertId).update({
-      'Code': code,
+      'code': code,
     });
   }
 
@@ -200,6 +213,7 @@ class FirestoreTransfertRepository implements TransfertRepository {
         .snapshots()
         .map((snapshot) => snapshot.docs.length);
   }
+
   @override
   Stream<int> getTravellerTransferCount(String id) {
     return _collectionReference
@@ -207,13 +221,13 @@ class FirestoreTransfertRepository implements TransfertRepository {
         .snapshots()
         .map((snapshot) => snapshot.docs.length);
   }
+
   @override
   Stream<int> getTravellerUnReadTransferCount(String id) {
     return _collectionReference
         .where("TravellerId", isEqualTo: id)
-        .where("read",isEqualTo: false)
+        .where("read", isEqualTo: false)
         .snapshots()
         .map((snapshot) => snapshot.docs.length);
   }
-
 }

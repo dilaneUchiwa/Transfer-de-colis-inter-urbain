@@ -26,12 +26,12 @@ class _BadgeNotificationState extends State<BadgeNotification> {
               position: BadgePosition.topEnd(top: 0, end: 0),
               badgeContent: Text(
                 "$nbre",
-                style: TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.white),
               ),
               child: IconButton(
-                icon: Icon(Icons.notifications),
+                icon: const Icon(Icons.notifications),
                 onPressed: () {
-                  Navigator.pushNamed(context, "/AcceptRejectPackage");
+                  Navigator.pushNamed(context, "/NotificationPage");
                 },
               ));
         });

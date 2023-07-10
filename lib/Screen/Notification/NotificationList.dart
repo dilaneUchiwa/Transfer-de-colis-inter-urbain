@@ -7,7 +7,7 @@ import 'package:transfert_colis_interurbain/Domain/Model/Packages.dart';
 import 'package:transfert_colis_interurbain/Domain/Model/Transfert.dart';
 import 'package:transfert_colis_interurbain/Screen/Notification/NotificationMessageItem.dart';
 import '../../Domain/Model/UserApp.dart';
-import 'SeeNotification.dart';
+import 'NotificationItem.dart';
 
 class NotificationList extends StatelessWidget {
   const NotificationList({super.key});
@@ -29,7 +29,7 @@ class NotificationList extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 1),
               child: Column(
                 children: data.map((transfert) {
-                  return SeeNotification(transfert);
+                  return NotificationItem(transfert);
                 }).toList(),
               ),
             ),

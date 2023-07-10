@@ -16,7 +16,7 @@ import '../Widgets/showSnackBar.dart';
 
 class TravellerAdd extends StatefulWidget {
   TravellerAdd({Key? key}) : super(key: key);
-
+  static Travel? travel = Travel.empty();
   @override
   State<TravellerAdd> createState() => _TravellerAddState();
 }
@@ -28,7 +28,7 @@ class _TravellerAddState extends State<TravellerAdd> {
   final List<List<String>> itemsLieux = [
     ['Bepanda', 'dakar'],
     ['Biyem assi', 'Tongolo', 'Terminus Mimboman'],
-    ['Ndiang Dam']
+    ['Ndiang Dam'],
   ];
   final List<String> itemsAgence = [
     "Général Express Voyage",
@@ -36,22 +36,21 @@ class _TravellerAddState extends State<TravellerAdd> {
     "Binam Voyage",
   ];
 
-  Travel? travel;
+  final TextEditingController textEditingController = TextEditingController();
+
+  static final _timeController = TextEditingController();
+
+  static String dateController = "";
+  DateTime? _selectedDate;
   String? selectedDeparture;
 
   String? selectedDestination;
 
-  String? quarterDeparture;
+  String? QuarterDeparture;
 
-  String? quarterDestination;
+  String? QuarterDestination;
 
-  String? agence;
-
-  String? hour;
-
-  final TextEditingController textEditingController = TextEditingController();
-
-  final _timeController = TextEditingController();
+  String? Agence;
 
   @override
   void dispose() {
@@ -70,10 +69,8 @@ class _TravellerAddState extends State<TravellerAdd> {
         DateTime(2021, 1, 1, picked.hour, picked.minute),
       );
     }
+    TravellerAdd.travel!.travelMoment = _timeController.text;
   }
-
-  String dateController = "";
-  DateTime? _selectedDate;
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -86,6 +83,9 @@ class _TravellerAddState extends State<TravellerAdd> {
         _selectedDate = picked;
         dateController = DateFormat("dd-MM-yyyy").format(picked);
       });
+
+      TravellerAdd.travel!.travelDate =
+          MyConverter.convertStringToDateTime(dateController);
     }
   }
 
@@ -93,6 +93,7 @@ class _TravellerAddState extends State<TravellerAdd> {
   Widget build(BuildContext context) {
     // recuperation des données de l'utilisateur couramment connecté
     final user = Provider.of<UserApp?>(context);
+    TravellerAdd.travel!.user = user!;
 
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.5,
@@ -137,6 +138,7 @@ class _TravellerAddState extends State<TravellerAdd> {
                   onChanged: (value) {
                     setState(() {
                       selectedDeparture = value;
+                      TravellerAdd.travel!.travelDeparture = value!;
                     });
                   },
                   dropdownStyleData: const DropdownStyleData(
@@ -214,10 +216,11 @@ class _TravellerAddState extends State<TravellerAdd> {
                                 ),
                               ))
                           .toList(),
-                  value: quarterDeparture,
+                  value: QuarterDeparture,
                   onChanged: (value) {
                     setState(() {
-                      quarterDeparture = value;
+                      QuarterDeparture = value;
+                      TravellerAdd.travel!.quarterDeparture = value!;
                     });
                   },
                   dropdownStyleData: const DropdownStyleData(
@@ -305,7 +308,9 @@ class _TravellerAddState extends State<TravellerAdd> {
                     value: selectedDestination,
                     onChanged: (value) {
                       setState(() {
-                        selectedDestination = value as String;
+                        selectedDestination = value;
+                        TravellerAdd.travel!.travelDestination =
+                            value as String;
                       });
                     },
 
@@ -386,10 +391,11 @@ class _TravellerAddState extends State<TravellerAdd> {
                                 ),
                               ))
                           .toList(),
-                  value: quarterDestination,
+                  value: QuarterDestination,
                   onChanged: (value) {
                     setState(() {
-                      quarterDeparture = value;
+                      QuarterDestination = value;
+                      TravellerAdd.travel!.quarterDestination = value!;
                     });
                   },
                   dropdownStyleData: const DropdownStyleData(
@@ -472,10 +478,11 @@ class _TravellerAddState extends State<TravellerAdd> {
                             ),
                           ))
                       .toList(),
-                  value: agence,
+                  value: Agence,
                   onChanged: (value) {
                     setState(() {
-                      agence = value;
+                      Agence = value;
+                      TravellerAdd.travel!.agence = value!;
                     });
                   },
                   dropdownStyleData: const DropdownStyleData(
@@ -529,7 +536,8 @@ class _TravellerAddState extends State<TravellerAdd> {
             Container(
               child: Column(children: <Widget>[
                 TextFormField(
-                  initialValue: _selectedDate==null?null:_selectedDate.toString(),
+                  initialValue:
+                      _selectedDate == null ? null : _selectedDate.toString(),
                   readOnly: true,
                   onTap: () => _selectDate(context),
                   decoration: const InputDecoration(
