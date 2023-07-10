@@ -92,7 +92,7 @@ class HomePageChatState extends State<HomePageChat> {
     });
   }
 
-  void configLocalNotification() {
+  void configLocalNotification() {  
     AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('app_icon');
     DarwinInitializationSettings initializationSettingsIOS = DarwinInitializationSettings();
     InitializationSettings initializationSettings = InitializationSettings(
