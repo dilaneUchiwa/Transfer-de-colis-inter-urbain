@@ -18,7 +18,7 @@ class TransfertManager {
 
   Future<void> updateTransfertReceiverAdd(
       Transfert transfert, String id) async {
-    return await _firestoreTransfertRepository.updateTransfert(transfert);
+    return await _firestoreTransfertRepository.updateTransfertReceiverAdd(transfert,id);
   }
 
   Future<Transfert?> getTransfertById(String id) async {

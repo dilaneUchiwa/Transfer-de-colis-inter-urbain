@@ -167,7 +167,7 @@ class FirestoreTransfertRepository implements TransfertRepository {
       'travelId': transfert.travel.travelId,
       //'paymentId': transfert.payment.paymentId,
       'packageId': transfert.package.packageId,
-      'ReceiverId': transfert.receiver.userId,
+      //'ReceiverId': transfert.receiver.userId,
       'finish': transfert.isfinish,
       'read': transfert.isRead,
       'reject': transfert.isReject,

@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:transfert_colis_interurbain/Screen/Receiver/ReceiverUserHistory.dart';
 import 'package:transfert_colis_interurbain/Screen/Sender/SenderList.dart';
 import 'package:transfert_colis_interurbain/Screen/Traveller/TravelerList.dart';
+import 'package:transfert_colis_interurbain/Screen/chat/pages/pages.dart';
 
 import '../App/Manager/UserManager.dart';
 import '../Data/DataSource/Remote/FirestoreUserRepository.dart';
@@ -78,7 +79,8 @@ class _HomePageState extends State<HomePage> {
               TravelList(),
               TravelUserHistory(),
               SenderList(),
-              ReceiverUserHistory()
+              ReceiverUserHistory(),
+              HomePageChat()
             ]),
         bottomNavigationBar: BottomNavigationBar(
           backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),

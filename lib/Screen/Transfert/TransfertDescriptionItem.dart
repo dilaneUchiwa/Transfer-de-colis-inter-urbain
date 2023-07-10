@@ -317,7 +317,7 @@ class _TranferDescriptionItemState extends State<TranferDescriptionItem> {
                           widget.receiverUse
                               ? Column(
                                   children: [
-                                    const SizedBox(width: 5),
+                                    const SizedBox(height: 15),
                                     Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
