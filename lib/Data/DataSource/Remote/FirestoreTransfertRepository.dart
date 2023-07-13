@@ -55,6 +55,7 @@ class FirestoreTransfertRepository implements TransfertRepository {
         documentSnapshot.get('read'),
         documentSnapshot.get('accept'),
         documentSnapshot.get('reject'),
+        documentSnapshot.get('exchange'),
         MyConverter.convertTimestampToDateTime(
             documentSnapshot.get('createdAt')),
         receiptAt);
@@ -87,11 +88,12 @@ class FirestoreTransfertRepository implements TransfertRepository {
       'packageId': transfert.package.packageId,
       'ReceiverId': null,
       'TravellerId': transfert.travel.user.userId,
-      'SenderId': transfert.travel.user.userId,
+      'SenderId': transfert.package.userSender.userId,
       'finish': false,
       'read': false,
       'accept': false,
       'reject': false,
+      'exchange':false,
       'createdAt': DateTime.now(),
       'receiptAt': null
     }).then((DocumentReference doc) => transfert.transfertId = doc.id);
@@ -101,6 +103,17 @@ class FirestoreTransfertRepository implements TransfertRepository {
   Stream<List<Transfert>> getUserTravellerTansferts(String userId) {
     return _collectionReference
         .where("TravellerId", isEqualTo: userId)
+        .snapshots()
+        .asyncMap(
+            (snapshot) async => Future.wait(snapshot.docs.map((doc) async {
+                  return documentsnapshotToTransfert(doc);
+                }).toList()));
+  }
+
+  @override
+  Stream<List<Transfert>> getByTravelTansferts(String id) {
+    return _collectionReference
+        .where("travelId", isEqualTo: id)
         .snapshots()
         .asyncMap(
             (snapshot) async => Future.wait(snapshot.docs.map((doc) async {
@@ -192,6 +205,12 @@ class FirestoreTransfertRepository implements TransfertRepository {
     return _collectionReference
         .doc(transfert.transfertId)
         .update({'finish': true, 'receiptAt': DateTime.now()});
+  }
+
+  Future<void> updateTransfertExchange(Transfert transfert) {
+    return _collectionReference
+        .doc(transfert.transfertId)
+        .update({'exchange': true});
   }
 
   Future<void> updateTransfertAccept(Transfert transfert) {

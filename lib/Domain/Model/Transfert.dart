@@ -9,11 +9,12 @@ class Transfert {
   Payment? _payment;
   Packages _pack;
   UserApp? _receiver;
-  int _code=0;
+  int _code = 0;
   bool _finish = false;
   bool _read = false;
   bool _accept = false;
   bool _reject = false;
+  bool _exchange = false;
   DateTime? _createdAt;
   DateTime? _receiptAt;
 
@@ -28,6 +29,7 @@ class Transfert {
       this._read,
       this._accept,
       this._reject,
+      this._exchange,
       this._createdAt,
       this._receiptAt);
 
@@ -88,6 +90,12 @@ class Transfert {
     _reject = value;
   }
 
+  bool get isexchange => _exchange;
+
+  set exchange(bool value) {
+    _exchange = value;
+  }
+
   DateTime get createdAT => _createdAt!;
 
   set createdAt(DateTime value) {
@@ -100,11 +108,9 @@ class Transfert {
     _receiptAt = value;
   }
 
-int get code => _code;
+  int get code => _code;
 
   set code(int value) {
     _code = value;
   }
-
-
 }

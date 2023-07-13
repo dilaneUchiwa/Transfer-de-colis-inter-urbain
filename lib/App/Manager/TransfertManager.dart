@@ -18,7 +18,8 @@ class TransfertManager {
 
   Future<void> updateTransfertReceiverAdd(
       Transfert transfert, String id) async {
-    return await _firestoreTransfertRepository.updateTransfertReceiverAdd(transfert,id);
+    return await _firestoreTransfertRepository.updateTransfertReceiverAdd(
+        transfert, id);
   }
 
   Future<Transfert?> getTransfertById(String id) async {
@@ -45,6 +46,10 @@ class TransfertManager {
     return await _firestoreTransfertRepository.updateTransfertReject(transfert);
   }
 
+  Future<void> updateTransfertExchange(Transfert transfert) async {
+    return await _firestoreTransfertRepository.updateTransfertExchange(transfert);
+  }
+
   Future<void> updateTransfertSetCode(Transfert transfert, int code) async {
     return await _firestoreTransfertRepository.updateTransfertSetCode(
         transfert, code);
@@ -60,6 +65,10 @@ class TransfertManager {
 
   Stream<List<Transfert>> getUserTravellerTansferts(String userId) {
     return _firestoreTransfertRepository.getUserTravellerTansferts(userId);
+  }
+
+  Stream<List<Transfert>> getByTravelTansferts(String travelId) {
+    return _firestoreTransfertRepository.getByTravelTansferts(travelId);
   }
 
   Stream<List<Transfert>> getUserReceiverTansferts(String userId) {

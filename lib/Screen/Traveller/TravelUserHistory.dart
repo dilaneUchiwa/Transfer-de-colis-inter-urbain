@@ -125,7 +125,7 @@ class TravelUserHistory extends StatelessWidget {
                     //   _formkey.currentState!.save();
 
                     if (await InternetChecker.checkInternetConnection()) {
-                      //await TravelManager().addTravel(TravellerAdd.travel!);
+                      await TravelManager().addTravel(TravellerAdd.travel!);
                       Navigator.pop(context);
                       showNotificationSuccessWithDuration(
                           context, "Votre voyage a été enregistré !", 5);

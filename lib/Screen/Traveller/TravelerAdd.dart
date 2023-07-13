@@ -34,6 +34,7 @@ class _TravellerAddState extends State<TravellerAdd> {
     "Général Express Voyage",
     "Trésor Voyage",
     "Binam Voyage",
+    "Personnel"
   ];
 
   final TextEditingController textEditingController = TextEditingController();
@@ -53,9 +54,15 @@ class _TravellerAddState extends State<TravellerAdd> {
   String? Agence;
 
   @override
+  void initState() {
+    super.initState();
+    TravellerAdd.travel = Travel.empty();
+  }
+
+  @override
   void dispose() {
-    textEditingController.dispose();
-    _timeController.dispose();
+    // textEditingController.dispose();
+    // _timeController.dispose();
     super.dispose();
   }
 
@@ -79,10 +86,9 @@ class _TravellerAddState extends State<TravellerAdd> {
         firstDate: DateTime(1900),
         lastDate: DateTime(2100));
     if (picked != null && picked != _selectedDate) {
-      setState(() {
-        _selectedDate = picked;
-        dateController = DateFormat("dd-MM-yyyy").format(picked);
-      });
+      dateController = DateFormat("dd-MM-yyyy").format(picked);
+      _selectedDate = picked;
+      _selectedDate = MyConverter.convertStringToDateTime(dateController);
 
       TravellerAdd.travel!.travelDate =
           MyConverter.convertStringToDateTime(dateController);
@@ -541,7 +547,7 @@ class _TravellerAddState extends State<TravellerAdd> {
                   readOnly: true,
                   onTap: () => _selectDate(context),
                   decoration: const InputDecoration(
-                    labelText: "Date",
+                    labelText: "Sélectionner une date",
                     //suffix: Icon(Icons.calendar_month_rounded),
                     suffixIcon: Icon(Icons.calendar_month_rounded),
                     contentPadding:
@@ -565,7 +571,7 @@ class _TravellerAddState extends State<TravellerAdd> {
                 },
                 readOnly: true,
                 decoration: const InputDecoration(
-                  labelText: "Heure",
+                  labelText: "Selectionner une heure",
                   suffixIcon: Icon(Icons.timelapse_rounded),
                   //hintText: "Enter password",
                   contentPadding:

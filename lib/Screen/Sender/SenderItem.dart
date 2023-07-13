@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:transfert_colis_interurbain/Screen/Widgets/showSnackBar.dart';
+import 'package:transfert_colis_interurbain/Screen/localisation/location.dart';
 
+import '../../App/Manager/TransfertManager.dart';
+import '../../Config/Theme/Theme.dart';
 import '../../Domain/Model/Transfert.dart';
 import '../Transfert/TransfertDescriptionItem.dart';
 
@@ -86,23 +90,189 @@ class _SenderPackageItemState extends State<SenderPackageItem> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         ElevatedButton(
-                          onPressed: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => TranferDescriptionItem(
-                                      widget.transfert, false))),
+                          onPressed: () {
+                            // Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //         builder: (context) => MapScreen()));
+                          },
                           child: const Text("Suivre le colis"),
                           style: ElevatedButton.styleFrom(
                               primary: Theme.of(context).primaryColor,
                               padding: const EdgeInsets.symmetric(
-                                horizontal: 20,
+                                horizontal: 8,
                                 vertical: 5,
                               ),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(50),
                               )),
                         ),
-                        const SizedBox(width: 20),
+                        const SizedBox(width: 10),
+                        widget.transfert.isfinish
+                            ? const Text("")
+                            : ElevatedButton(
+                                onPressed: () {
+                                  showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        final _formKey = GlobalKey<FormState>();
+                                        int code = 0;
+                                        return AlertDialog(
+                                          title: Text(
+                                            "Confirmation de l'échange"
+                                                .toUpperCase(),
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
+                                                color: Theme.of(context)
+                                                    .primaryColor),
+                                          ),
+                                          content: Form(
+                                            key: _formKey,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                SizedBox(height: 16.0),
+                                                Text(
+                                                  'Le code a été généré au début de la transaction . le même code doit être utilisé pour confirmer l\'échange',
+                                                  style:
+                                                      TextStyle(fontSize: 16.0),
+                                                ),
+                                                SizedBox(height: 20),
+                                                Text(
+                                                  'Veuillez saisir le code ci-dessous :',
+                                                  style:
+                                                      TextStyle(fontSize: 16.0),
+                                                ),
+                                                SizedBox(height: 16.0),
+                                                TextFormField(
+                                                  decoration: InputDecoration(
+                                                    labelText:
+                                                        'Code de transfert',
+                                                    border:
+                                                        OutlineInputBorder(),
+                                                  ),
+                                                  validator: (value) {
+                                                    if (value == null ||
+                                                        value.isEmpty) {
+                                                      return 'Veuillez saisir le code';
+                                                    }
+                                                    return null;
+                                                  },
+                                                  onSaved: (value) {
+                                                    code = int.parse(value!);
+                                                  },
+                                                  keyboardType:
+                                                      TextInputType.number,
+                                                ),
+                                                const SizedBox(height: 16.0),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  children: [
+                                                    ElevatedButton(
+                                                      onPressed: () async {
+                                                        if (_formKey
+                                                            .currentState!
+                                                            .validate()) {
+                                                          _formKey.currentState!
+                                                              .save();
+
+                                                          Transfert? transfert =
+                                                              await TransfertManager()
+                                                                  .getTransfertByCode(
+                                                                      "$code");
+
+                                                          if (transfert ==
+                                                              null) {
+                                                            // ignore: use_build_context_synchronously
+                                                            showDialog(
+                                                                barrierDismissible:
+                                                                    false,
+                                                                context:
+                                                                    context,
+                                                                builder: (BuildContext
+                                                                        context) =>
+                                                                    AlertDialog(
+                                                                      content:
+                                                                          SizedBox(
+                                                                        height: MediaQuery.of(context).size.height *
+                                                                            0.20,
+                                                                        child: Center(
+                                                                            child: Column(
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.center,
+                                                                          crossAxisAlignment:
+                                                                              CrossAxisAlignment.center,
+                                                                          children: [
+                                                                            const SizedBox(height: 40),
+                                                                            const Text("Le code de transfert"),
+                                                                            const SizedBox(height: 5),
+                                                                            Text(
+                                                                              "$code",
+                                                                              style: const TextStyle(fontSize: 18, color: Themes.textcolor, fontWeight: FontWeight.bold),
+                                                                            ),
+                                                                            const SizedBox(height: 5),
+                                                                            const Text(
+                                                                              "ne correspond à aucune transaction en cours",
+                                                                              textAlign: TextAlign.center,
+                                                                            )
+                                                                          ],
+                                                                        )),
+                                                                      ),
+                                                                      actions: <
+                                                                          Widget>[
+                                                                        MaterialButton(
+                                                                          onPressed:
+                                                                              () {
+                                                                            Navigator.pop(context,
+                                                                                'Annuler');
+                                                                          },
+                                                                          child:
+                                                                              const Text('Fermer'),
+                                                                        )
+                                                                      ],
+                                                                    ));
+                                                          } else {
+                                                            await TransfertManager()
+                                                                .updateTransfertExchange(
+                                                                    widget
+                                                                        .transfert);
+                                                            setState(() {
+                                                              widget.transfert
+                                                                      .exchange =
+                                                                  true;
+                                                            });
+                                                            showNotificationSuccessWithDuration(
+                                                                context,
+                                                                "l'échange de colis a été enregistré",
+                                                                10);
+                                                          }
+                                                        }
+                                                      },
+                                                      child: Text('Valider'),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      });
+                                },
+                                child: const Text("Confirmer l'échange"),
+                                style: ElevatedButton.styleFrom(
+                                    primary: Theme.of(context).primaryColor,
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical: 5,
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(50),
+                                    )),
+                              ),
+                        const SizedBox(width: 10),
                         ElevatedButton(
                           onPressed: () => Navigator.push(
                               context,
@@ -112,13 +282,13 @@ class _SenderPackageItemState extends State<SenderPackageItem> {
                                             title: Text(
                                                 "Description du transfert")),
                                         body: TranferDescriptionItem(
-                                            widget.transfert, false),
+                                            widget.transfert, true),
                                       ))),
                           child: const Text("Voir"),
                           style: ElevatedButton.styleFrom(
                               primary: Colors.grey,
                               padding: const EdgeInsets.symmetric(
-                                horizontal: 20,
+                                horizontal: 8,
                                 vertical: 5,
                               ),
                               shape: RoundedRectangleBorder(

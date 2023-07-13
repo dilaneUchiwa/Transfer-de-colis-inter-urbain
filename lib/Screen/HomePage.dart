@@ -1,15 +1,15 @@
-import 'package:badges/badges.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:transfert_colis_interurbain/App/Service/LocationService.dart';
+import 'package:transfert_colis_interurbain/Config/AppConfig.dart';
+import 'package:transfert_colis_interurbain/Domain/Model/UserApp.dart';
 import 'package:transfert_colis_interurbain/Screen/Receiver/ReceiverUserHistory.dart';
 import 'package:transfert_colis_interurbain/Screen/Sender/SenderList.dart';
 import 'package:transfert_colis_interurbain/Screen/Traveller/TravelerList.dart';
 import 'package:transfert_colis_interurbain/Screen/chat/pages/pages.dart';
 
-import '../App/Manager/UserManager.dart';
-import '../Data/DataSource/Remote/FirestoreUserRepository.dart';
+import '../Service/notification_services.dart';
 import 'Traveller/TravelUserHistory.dart';
 import 'Widgets/BadgeNotification.dart';
 import 'Widgets/SearchWidget.dart';
@@ -25,44 +25,51 @@ class _HomePageState extends State<HomePage> {
   List<BottomNavigationBarItem> _NavigationBarItems = [];
   final PageController _pageController = PageController(initialPage: 0);
   int _currentIndex = 0;
-  
 
   @override
   void initState() {
     super.initState();
     _NavigationBarItems.add(const BottomNavigationBarItem(
       icon: Icon(Icons.home),
-      label: "home",
+      label: "Accueil",
       backgroundColor: Color.fromRGBO(31, 44, 52, 1),
     ));
 
     _NavigationBarItems.add(const BottomNavigationBarItem(
       icon: FaIcon(FontAwesomeIcons.truckFast),
-      label: "Travel",
+      label: "Espace Voyage",
       backgroundColor: Color.fromRGBO(31, 44, 52, 1),
     ));
-        _NavigationBarItems.add(const BottomNavigationBarItem(
+    _NavigationBarItems.add(const BottomNavigationBarItem(
       icon: Icon(Icons.send_time_extension_rounded),
-      label: "Send",
+      label: "Expédition",
       backgroundColor: Color.fromRGBO(31, 44, 52, 1),
     ));
 
     _NavigationBarItems.add(const BottomNavigationBarItem(
       icon: Icon(Icons.receipt),
-      label: "Receive",
+      label: "Reception",
       backgroundColor: Color.fromRGBO(31, 44, 52, 1),
     ));
     _NavigationBarItems.add(const BottomNavigationBarItem(
       icon: Icon(Icons.message),
-      label: "Chat",
+      label: "Discussion",
       backgroundColor: Color.fromRGBO(31, 44, 52, 1),
     ));
-
+    notificationServices.requestNotificationPermission();
+    notificationServices.forgroundMessage();
+    notificationServices.firebaseInit(context);
+    notificationServices.setupInteractMessage(context);
+    notificationServices.isTokenRefresh();
   }
+   NotificationServices notificationServices = NotificationServices();
+
 
   @override
   Widget build(BuildContext context) {
-    
+    final user = Provider.of<UserApp>(context);
+    AppConfig.UserId = user.userId;
+
     return Scaffold(
         appBar: AppBar(
             actions: const [BadgeNotification(), SizedBox(width: 20)],

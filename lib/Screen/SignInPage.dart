@@ -28,7 +28,7 @@ class _SignInPageState extends State<SignInPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Sign In"),
+        title: const Text("Connexion",textAlign: TextAlign.center),
       ),
       body: SingleChildScrollView(
         child: Form(
@@ -45,7 +45,7 @@ class _SignInPageState extends State<SignInPage> {
                       children: [
                         const SizedBox(height: 20),
                         const Text(
-                          "Welcome",
+                          "Bienvenu",
                           style: TextStyle(fontSize: 35),
                         ),
 
@@ -61,7 +61,7 @@ class _SignInPageState extends State<SignInPage> {
                               });
                             },
                             validator: (value) => value == null || value.isEmpty
-                                ? 'Invalid Email'
+                                ? 'Email invalid'
                                 : null,
                             decoration: const InputDecoration(
                               labelText: "Email",
@@ -97,7 +97,7 @@ class _SignInPageState extends State<SignInPage> {
                                     : 'mot de passe Incorrect'
                                 : null,
                             decoration: const InputDecoration(
-                              labelText: "password",
+                              labelText: "Mot de passe",
                               //hintText: "Enter password",
                               contentPadding: EdgeInsets.symmetric(
                                   horizontal: 20, vertical: 10),
@@ -122,7 +122,7 @@ class _SignInPageState extends State<SignInPage> {
                               Expanded(child: Column()),
                               TextButton(
                                   onPressed: () {},
-                                  child: const Text("Forgotten Password ?"))
+                                  child: const Text("Mot de passe oublié ?"))
                             ],
                           ),
                         ),

@@ -6,6 +6,7 @@ import 'package:transfert_colis_interurbain/Screen/Receiver/ReceiverAdd.dart';
 import 'package:transfert_colis_interurbain/Screen/Traveller/TravelerAdd.dart';
 import 'package:transfert_colis_interurbain/Screen/User/Administrateur.dart';
 import 'App/Service/Authentification.dart';
+import 'App/Service/LocationService.dart';
 import 'Config/Theme/Theme.dart';
 import 'Wrapper.dart';
 import 'Screen/HomePage.dart';
@@ -14,10 +15,19 @@ import 'Screen/SignUpPage.dart';
 import 'Screen/WelcomePage.dart';
 
 Future<void> main() async {
+  bool isFullAutorisation = false;
+
   // on s'assure que tous les widgets sont initialisé
   WidgetsFlutterBinding.ensureInitialized();
   // attende de l'initialisation du service firevalse
   await Firebase.initializeApp();
+
+  isFullAutorisation = await checkLocationPermission();
+  while (!isFullAutorisation) {
+    isFullAutorisation = await checkLocationPermission();
+  }
+  await initializeLocationService();
+
 
   runApp(MultiProvider(
     providers: [
@@ -50,10 +60,9 @@ class MyApp extends StatelessWidget {
         "/SignUp": (context) => SignUpPage(),
         "/Wrapper": (context) => Wrapper(),
         "/AdministrateurPanel": (context) => AdministrateurPanel(),
-        "/TravellerAdd": (context) => TravellerAdd() ,
-        "/ReceiverAdd": (context) => ReceiverAdd() ,
-        "/NotificationPage":(context)=>NotificationPage(),
-        
+        "/TravellerAdd": (context) => TravellerAdd(),
+        "/ReceiverAdd": (context) => ReceiverAdd(),
+        "/NotificationPage": (context) => NotificationPage(),
       },
     );
   }

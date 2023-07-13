@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 class Themes {
   static final principal = ThemeData(
-    primaryColor: Colors.green,
+    primaryColor: Colors.blue.shade900,
     //useMaterial3: true,
-    colorScheme: ColorScheme.fromSeed(seedColor: Colors.green)
+    colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue.shade900)
     //colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple)
   );
-  static const textcolor=Colors.green;
+  static const textcolor=Colors.blue;
 }
 
 class Styles {

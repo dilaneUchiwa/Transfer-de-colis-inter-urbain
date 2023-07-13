@@ -5,6 +5,7 @@ import 'package:transfert_colis_interurbain/App/Manager/UserManager.dart';
 import 'package:transfert_colis_interurbain/Data/DataSource/Remote/FirestoreUserRepository.dart';
 import 'package:transfert_colis_interurbain/Domain/Model/UserApp.dart';
 
+import 'Config/AppConfig.dart';
 import 'Screen/HomePage.dart';
 import 'Screen/SignInPage.dart';
 
@@ -18,8 +19,7 @@ class Wrapper extends StatefulWidget {
 class _WrapperState extends State<Wrapper> {
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<UserApp?>(context);    
-     
+    final user = Provider.of<UserApp?>(context);
     print("UserApp auth : ${user}");
 
     return user == null ? SignInPage() : const HomePage();

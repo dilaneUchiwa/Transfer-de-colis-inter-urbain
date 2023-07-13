@@ -2,14 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:intl/intl.dart';
+import 'package:transfert_colis_interurbain/App/Manager/TransfertManager.dart';
 import 'package:transfert_colis_interurbain/Config/Theme/Theme.dart';
 import 'package:transfert_colis_interurbain/Domain/Model/Transfert.dart';
 import 'package:transfert_colis_interurbain/Utils/Converter.dart';
 
-class ReceiverUserItem extends StatelessWidget {
+import '../../Utils/InternetChecker.dart';
+import '../Transfert/TransfertDescriptionItem.dart';
+import '../Widgets/showSnackBar.dart';
+
+class ReceiverUserItem extends StatefulWidget {
   Transfert transfert;
   ReceiverUserItem(this.transfert, {super.key});
 
+  @override
+  State<ReceiverUserItem> createState() => _ReceiverUserItemState();
+}
+
+class _ReceiverUserItemState extends State<ReceiverUserItem> {
   @override
   Widget build(BuildContext context) {
     //ImageProvider<Object> photo;
@@ -34,36 +44,55 @@ class ReceiverUserItem extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 10),
           child: Column(
             children: [
+              widget.transfert.isfinish
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(
+                          "( terminé )",
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ],
+                    )
+                  : Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(
+                          "( en cours )",
+                          style: TextStyle(color: Colors.grey.shade700),
+                        ),
+                      ],
+                    ),
+              const SizedBox(height: 5),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
                     children: [
                       SizedBox(width: 10),
-                      Text(transfert.package.packageDescription,
+                      Text(widget.transfert.package.packageDescription,
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 14)),
-                      Icon(Icons.watch_later_outlined),
                     ],
                   ),
                   Row(
                     children: [
                       Text(
-                        transfert.travel.travelDeparture,
+                        widget.transfert.travel.travelDeparture,
                         style: const TextStyle(
                             fontStyle: FontStyle.italic,
                             color: Themes.textcolor),
                       ),
                       const SizedBox(height: 5),
                       const Text(
-                        "=>",
+                        " => ",
                         style: TextStyle(
                             fontStyle: FontStyle.italic,
                             color: Themes.textcolor),
                       ),
                       const SizedBox(width: 5),
                       Text(
-                        transfert.travel.travelDestination,
+                        widget.transfert.travel.travelDestination,
                         style: const TextStyle(
                             fontStyle: FontStyle.italic,
                             color: Themes.textcolor),
@@ -87,7 +116,7 @@ class ReceiverUserItem extends StatelessWidget {
                   Row(
                     children: [
                       Text(MyConverter.convertDateTimeToHumanString(
-                          transfert.createdAT)),
+                          widget.transfert.createdAT)),
                       const SizedBox(width: 5)
                     ],
                   )
@@ -110,13 +139,174 @@ class ReceiverUserItem extends StatelessWidget {
                   Row(
                     children: [
                       Text(MyConverter.convertDateTimeToHumanString(
-                          transfert.createdAT)),
+                          widget.transfert.createdAT)),
                       const SizedBox(width: 5)
                     ],
                   ),
                 ],
               ),
               const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ElevatedButton(
+                    onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => TranferDescriptionItem(
+                                widget.transfert, false))),
+                    child: const Text("Suivre le colis"),
+                    style: ElevatedButton.styleFrom(
+                        primary: Colors.red,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 5,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50),
+                        )),
+                  ),
+                  const SizedBox(width: 20),
+                  ElevatedButton(
+                    onPressed: () async => {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) => AlertDialog(
+                                  title: Text(
+                                    "Confirmation".toUpperCase(),
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: Theme.of(context).primaryColor),
+                                  ),
+                                  content: SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.18,
+                                      child: const Center(
+                                        child: Text(
+                                            "Etes vous sur de vouloir refuser de transférer ce colis"),
+                                      )),
+                                  actions: <Widget>[
+                                    MaterialButton(
+                                      onPressed: () {
+                                        Navigator.pop(context, 'Annuler');
+                                      },
+                                      child: const Text('Fermer'),
+                                    ),
+                                    MaterialButton(
+                                      onPressed: () async {
+                                        if (await InternetChecker
+                                            .checkInternetConnection()) {
+                                          await TransfertManager()
+                                              .updateTransfertFinish(
+                                                  widget.transfert);
+                                          setState(() {
+                                            widget.transfert.finish = true;
+                                          });
+                                          showDialog(
+                                              barrierDismissible: false,
+                                              context: context,
+                                              builder: (BuildContext context) =>
+                                                  AlertDialog(
+                                                    content: SizedBox(
+                                                      height:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .height *
+                                                              0.20,
+                                                      child: Center(
+                                                          child: Column(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          const SizedBox(
+                                                              height: 40),
+                                                          const Text(
+                                                              "Le code de transfert"),
+                                                          const SizedBox(
+                                                              height: 5),
+                                                          Text(
+                                                            "${widget.transfert.code}",
+                                                            style: const TextStyle(
+                                                                fontSize: 18,
+                                                                color: Themes
+                                                                    .textcolor,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                          ),
+                                                          const SizedBox(
+                                                              height: 5),
+                                                          const Text(
+                                                            "Le colis a été marqué comme recu",
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                          )
+                                                        ],
+                                                      )),
+                                                    ),
+                                                    actions: <Widget>[
+                                                      MaterialButton(
+                                                        onPressed: () {
+                                                          Navigator.pop(context,
+                                                              'Annuler');
+                                                        },
+                                                        child: const Text(
+                                                            'Fermer'),
+                                                      )
+                                                    ],
+                                                  ));
+                                        } else {
+                                          showNotificationError(context,
+                                              "Pas de connexion internet !");
+                                        }
+
+                                        Navigator.pop(context, 'Annuler');
+                                      },
+                                      child: const Text('ok'),
+                                    ),
+                                  ]))
+                    },
+                    child: const Text("Recevoir"),
+                    style: ElevatedButton.styleFrom(
+                        primary: Theme.of(context).primaryColor,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 5,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50),
+                        )),
+                  ),
+                  const SizedBox(width: 20),
+                  ElevatedButton(
+                    onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Scaffold(
+                                  appBar: AppBar(
+                                      title: Text("Description du transfert")),
+                                  body: TranferDescriptionItem(
+                                      widget.transfert, false),
+                                ))),
+                    child: const Text("Voir"),
+                    style: ElevatedButton.styleFrom(
+                        primary: Colors.grey,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 5,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50),
+                        )),
+                  ),
+                ],
+              )
             ],
           ),
         ));

@@ -12,7 +12,7 @@ class _NotificationPageState extends State<NotificationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar( title: Text("Mes Notifications"),
+      appBar: AppBar( title: Text("Demande de transfert"),
     ),
     body: NotificationList(),
     );
