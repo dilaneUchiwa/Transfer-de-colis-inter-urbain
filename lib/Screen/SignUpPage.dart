@@ -58,7 +58,7 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Sign Up"),
+        title: const Text("Page d'insciption"),
       ),
       body: SingleChildScrollView(
         child: Form(
@@ -75,14 +75,14 @@ class _SignUpPageState extends State<SignUpPage> {
                   children: [
                     const SizedBox(height: 20),
                     const Text(
-                      "Register",
-                      style: TextStyle(fontSize: 25),
+                      "Veuillez fournir des informations sur votre personne",
+                      style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 20),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Name', style: TextStyle(fontSize: 16)),
+                        Text('Nom', style: TextStyle(fontSize: 16)),
                         TextFormField(
                             validator: (value) {
                               if (value == null || value.isEmpty) {
@@ -104,7 +104,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               ),
                             )),
                         const SizedBox(height: 20),
-                        Text('SurName', style: TextStyle(fontSize: 16)),
+                        Text('Prénom', style: TextStyle(fontSize: 16)),
                         TextFormField(
                             validator: (value) {
                               if (value == null || value.isEmpty) {
@@ -200,7 +200,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           ],
                         ),
                         const SizedBox(height: 20),
-                        Text('Phone Number', style: TextStyle(fontSize: 16)),
+                        Text('Numéro de téléphone', style: TextStyle(fontSize: 16)),
                         TextFormField(
                             validator: (value) {
                               if (value == null || value.isEmpty) {
@@ -348,7 +348,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                     "Veuillez correctement remplir tout les champs !");
                               }
                             },
-                            child: const Text('Next'),
+                            child: const Text('Suivant'),
                             style: ElevatedButton.styleFrom(
                               primary: Theme.of(context).primaryColor,
                               padding: const EdgeInsets.symmetric(

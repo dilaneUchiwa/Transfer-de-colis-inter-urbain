@@ -28,7 +28,7 @@ class _UserProfilState extends State<UserProfil> {
       }
     }
     return Scaffold(
-        appBar: AppBar(title: const Text("User Profile")),
+        appBar: AppBar(title: const Text("Profile utilisateur")),
         body: Padding(
           padding: EdgeInsets.symmetric(horizontal: 8),
           child: Column(
@@ -69,14 +69,14 @@ class _UserProfilState extends State<UserProfil> {
                                 children: [
                                   ListTile(
                                     onTap: () {},
-                                    title: Text('Name',
+                                    title: Text('Nom',
                                         style: TextStyle(fontSize: 16)),
                                     subtitle: Text(widget.user.userName!),
                                     trailing: Icon(Icons.person),
                                   ),
                                   ListTile(
                                     onTap: () {},
-                                    title: Text('SurName',
+                                    title: Text('Prénom',
                                         style: TextStyle(fontSize: 16)),
                                     subtitle: Text(widget.user.userSurname!),
                                   ),
@@ -101,7 +101,7 @@ class _UserProfilState extends State<UserProfil> {
                                   ),
                                   ListTile(
                                     onTap: () {},
-                                    title: Text('Phone Number',
+                                    title: Text('Numéro de téléphone',
                                         style: TextStyle(fontSize: 16)),
                                     subtitle: Text(
                                       widget.user.userTelephoneNumber
@@ -119,7 +119,7 @@ class _UserProfilState extends State<UserProfil> {
                                     trailing: Icon(Icons.email),
                                   ),
                                   ListTile(
-                                    title: Text("ID Card Recto"),
+                                    title: Text("Photo CNI Recto"),
                                     subtitle: Container(
                                       decoration: BoxDecoration(
                                         border: Border.all(),
@@ -142,11 +142,11 @@ class _UserProfilState extends State<UserProfil> {
                                                 ),
                                               ],
                                             )
-                                          : Text("Image not found "),
+                                          : Text("Image introuvable "),
                                     ),
                                   ),
                                   ListTile(
-                                    title: Text("ID Card Verso"),
+                                    title: Text("Photo CNI Verso"),
                                     subtitle: Container(
                                       decoration: BoxDecoration(
                                         border: Border.all(),
@@ -169,7 +169,7 @@ class _UserProfilState extends State<UserProfil> {
                                                 ),
                                               ],
                                             )
-                                          : Text("Image not found "),
+                                          : Text("Image introuvable "),
                                     ),
                                   ),
                                   const SizedBox(height: 20),

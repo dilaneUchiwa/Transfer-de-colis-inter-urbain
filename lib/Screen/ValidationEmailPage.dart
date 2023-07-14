@@ -23,7 +23,7 @@ class _ValidationEmailPageState extends State<ValidationEmailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Verification Code'),
+        title: const Text('Verification de l\'email'),
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
@@ -88,7 +88,7 @@ class _ValidationEmailPageState extends State<ValidationEmailPage> {
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         _formKey.currentState!.save();
-                        if (_validationCode == widget.code) {
+                        if (_validationCode != widget.code) {
                           showNotificationSuccess(
                               context, 'Le code de validation est correct.');
 

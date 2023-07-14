@@ -35,7 +35,7 @@ class ImageCamFileState extends State<ImageCamFile> {
     bool _isLoading=false;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('IDENTITY VERIFICATION'),
+        title: const Text('Vérification de l\'identité'),
         centerTitle: true,
       ),
       body: Stack(
@@ -48,221 +48,212 @@ class ImageCamFileState extends State<ImageCamFile> {
                   SizedBox(
                     height: 5,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(18.0),
-                    child: Column(
-                      children: [
-                        Center(
-                          child: Column(
-                            children: [
-                              Text(
-                                "User Photo",
-                                style: TextStyle(
-                                    fontSize: 25, fontWeight: FontWeight.bold),
+                  Column(
+                    children: [
+                      Center(
+                        child: Column(
+                          children: [
+                            Text(
+                              "Fournisser une image actuelle de vous même",
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Container(
+                              padding: EdgeInsets.only(top: 15),
+                              decoration: BoxDecoration(
+                                border: Border.all(),
                               ),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              Container(
-                                padding: EdgeInsets.only(top: 15),
-                                decoration: BoxDecoration(
-                                  border: Border.all(),
-                                ),
-                                child: Column(
-                                  children: [
-                                    ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        primary: Theme.of(context).primaryColor,
-                                        textStyle: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                              child: Column(
+                                children: [
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      primary: Theme.of(context).primaryColor,
+                                      textStyle: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
                                       ),
-                                      onPressed: () =>
-                                          pickUserPhoto(ImageSource.gallery),
-                                      child: const Text('From Gallery'),
                                     ),
-                                    ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        primary: Theme.of(context).primaryColor,
-                                        textStyle: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                    onPressed: () =>
+                                        pickUserPhoto(ImageSource.gallery),
+                                    child: const Text('Importé depuis la galérie'),
+                                  ),
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      primary: Theme.of(context).primaryColor,
+                                      textStyle: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
                                       ),
-                                      onPressed: () =>
-                                          pickUserPhoto(ImageSource.camera),
-                                      child: const Text('From Camera'),
                                     ),
-                                    Container(
-                                      decoration: const BoxDecoration(),
-                                      padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
-                                      child: userPhoto != null
-                                          ? Image.file(
-                                              fit: BoxFit.cover,
-                                              userPhoto!,
-                                              height: 150,
-                                              width: 250,
-                                              alignment: Alignment.center,
-                                            )
-                                          : Text("Nothing picked"),
-                                    ),
-                                  ],
-                                ),
+                                    onPressed: () =>
+                                        pickUserPhoto(ImageSource.camera),
+                                    child: const Text('Prendre une image'),
+                                  ),
+                                  Container(
+                                    decoration: const BoxDecoration(),
+                                    padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+                                    child: userPhoto != null
+                                        ? Image.file(
+                                            fit: BoxFit.cover,
+                                            userPhoto!,
+                                            height: 150,
+                                            width: 250,
+                                            alignment: Alignment.center,
+                                          )
+                                        : Text("Aucune image Sélectionnée"),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(18.0),
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Center(
-                          child: Column(
-                            children: [
-                              Text(
-                                "Recto De La Carte",
-                                style: TextStyle(
-                                    fontSize: 25, fontWeight: FontWeight.bold),
+                  Column(
+                    children: [
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Center(
+                        child: Column(
+                          children: [
+                            Text(
+                              "Fournisser une image du côté recto de votre CNI",
+                              style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Container(
+                              padding: EdgeInsets.only(top: 10),
+                              decoration: BoxDecoration(
+                                border: Border.all(),
                               ),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              Container(
-                                padding: EdgeInsets.only(top: 10),
-                                decoration: BoxDecoration(
-                                  border: Border.all(),
-                                ),
-                                child: Column(
-                                  children: [
-                                    ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        primary: Theme.of(context).primaryColor,
-                                        textStyle: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                              child: Column(
+                                children: [
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      primary: Theme.of(context).primaryColor,
+                                      textStyle: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
                                       ),
-                                      onPressed: () =>
-                                          pickImageRecto(ImageSource.gallery),
-                                      child: const Text('From Gallery'),
                                     ),
-                                    ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        primary: Theme.of(context).primaryColor,
-                                        textStyle: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                    onPressed: () =>
+                                        pickImageRecto(ImageSource.gallery),
+                                    child: const Text('Importé depuis la galérie'),
+                                  ),
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      primary: Theme.of(context).primaryColor,
+                                      textStyle: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
                                       ),
-                                      onPressed: () =>
-                                          pickImageRecto(ImageSource.camera),
-                                      child: const Text('From Camera'),
                                     ),
-                                    Container(
-                                      decoration: const BoxDecoration(),
-                                      padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
-                                      child: imageRecto != null
-                                          ? Image.file(
-                                              fit: BoxFit.cover,
-                                              imageRecto!,
-                                              height: 150,
-                                              width: 250,
-                                              alignment: Alignment.center,
-                                            )
-                                          : Text("Nothing picked"),
-                                    ),
-                                  ],
-                                ),
+                                    onPressed: () =>
+                                        pickImageRecto(ImageSource.camera),
+                                    child: const Text('Prendre une image'),
+                                  ),
+                                  Container(
+                                    decoration: const BoxDecoration(),
+                                    padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+                                    child: imageRecto != null
+                                        ? Image.file(
+                                            fit: BoxFit.cover,
+                                            imageRecto!,
+                                            height: 150,
+                                            width: 250,
+                                            alignment: Alignment.center,
+                                          )
+                                        : Text("Aucune image Sélectionnée"),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                   SizedBox(
                     height: 5,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(18.0),
-                    child: Column(
-                      children: [
-                        Center(
-                          child: Column(
-                            children: [
-                              Text(
-                                "Verso De La Carte",
-                                style: TextStyle(
-                                    fontSize: 25, fontWeight: FontWeight.bold),
+                  Column(
+                    children: [
+                      Center(
+                        child: Column(
+                          children: [
+                            Text(
+                              "Fournisser une image du côté verso de votre CNI",
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Container(
+                              padding: EdgeInsets.only(top: 15),
+                              decoration: BoxDecoration(
+                                border: Border.all(),
                               ),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              Container(
-                                padding: EdgeInsets.only(top: 15),
-                                decoration: BoxDecoration(
-                                  border: Border.all(),
-                                ),
-                                child: Column(
-                                  children: [
-                                    ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        primary: Theme.of(context).primaryColor,
-                                        textStyle: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                              child: Column(
+                                children: [
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      primary: Theme.of(context).primaryColor,
+                                      textStyle: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
                                       ),
-                                      onPressed: () =>
-                                          pickImageVerso(ImageSource.gallery),
-                                      child: const Text('From Gallery'),
                                     ),
-                                    ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        primary: Theme.of(context).primaryColor,
-                                        textStyle: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                    onPressed: () =>
+                                        pickImageVerso(ImageSource.gallery),
+                                    child: const Text('Importé depuis la galérie'),
+                                  ),
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      primary: Theme.of(context).primaryColor,
+                                      textStyle: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
                                       ),
-                                      onPressed: () =>
-                                          pickImageVerso(ImageSource.camera),
-                                      child: const Text('From Camera'),
                                     ),
-                                    Container(
-                                      decoration: const BoxDecoration(),
-                                      padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
-                                      child: imageVerso != null
-                                          ? Image.file(
-                                              fit: BoxFit.cover,
-                                              imageVerso!,
-                                              height: 150,
-                                              width: 250,
-                                              alignment: Alignment.center,
-                                            )
-                                          : Text("Nothing picked"),
-                                    ),
-                                  ],
-                                ),
+                                    onPressed: () =>
+                                        pickImageVerso(ImageSource.camera),
+                                    child: const Text('From Camera'),
+                                  ),
+                                  Container(
+                                    decoration: const BoxDecoration(),
+                                    padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+                                    child: imageVerso != null
+                                        ? Image.file(
+                                            fit: BoxFit.cover,
+                                            imageVerso!,
+                                            height: 150,
+                                            width: 250,
+                                            alignment: Alignment.center,
+                                          )
+                                        : Text("Aucune image Sélectionnée"),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 10),
                   Container(
@@ -316,7 +307,7 @@ class ImageCamFileState extends State<ImageCamFile> {
                                 "Pas de connexion internet !");
                         }
                       },
-                      child: const Text('Sign UP'),
+                      child: const Text('Soummettre mes informations'),
                     ),
                   ),
                 ],

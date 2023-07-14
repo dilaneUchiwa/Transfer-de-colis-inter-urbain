@@ -28,7 +28,12 @@ class _SignInPageState extends State<SignInPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Connexion",textAlign: TextAlign.center),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const[
+             Text("Page Connexion",textAlign: TextAlign.center),
+          ],
+        ),
       ),
       body: SingleChildScrollView(
         child: Form(
@@ -45,8 +50,8 @@ class _SignInPageState extends State<SignInPage> {
                       children: [
                         const SizedBox(height: 20),
                         const Text(
-                          "Bienvenu",
-                          style: TextStyle(fontSize: 35),
+                          "Bienvenu sur Easy Transfer",textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 35,fontWeight: FontWeight.bold),
                         ),
 
                         const SizedBox(height: 20),
@@ -61,7 +66,7 @@ class _SignInPageState extends State<SignInPage> {
                               });
                             },
                             validator: (value) => value == null || value.isEmpty
-                                ? 'Email invalid'
+                                ? 'Email invalide'
                                 : null,
                             decoration: const InputDecoration(
                               labelText: "Email",
@@ -155,7 +160,7 @@ class _SignInPageState extends State<SignInPage> {
                                         setState(() {
                                           inLoginProcess = false;
                                           authResult =
-                                              "authentification failed";
+                                              "Echec d'authentification";
                                         });
                                       }
                                     }
@@ -180,7 +185,7 @@ class _SignInPageState extends State<SignInPage> {
                                       ),
                                       const Center(
                                           child: Text(
-                                              'Sign In With Email And Password',
+                                              ' Connexion avec email et mot de passe',
                                               textAlign: TextAlign.right)),
                                     ],
                                   ),
@@ -223,8 +228,8 @@ class _SignInPageState extends State<SignInPage> {
                                           ],
                                         ),
                                       ),
-                                      const Center(
-                                          child: Text('FaceBook Account ',
+                                      const Center( 
+                                          child: Text(' Connexion avec FaceBook',
                                               textAlign: TextAlign.right)),
                                     ],
                                   ),
@@ -258,7 +263,7 @@ class _SignInPageState extends State<SignInPage> {
 
                                       setState(() {
                                         inLoginProcessGoogle = false;
-                                        authResult = "authentification failed";
+                                        authResult = "Echec d'authentification";
                                       });
                                     } else {
                                       Navigator.of(context).pop();
@@ -274,7 +279,7 @@ class _SignInPageState extends State<SignInPage> {
                                         size: 18,
                                       ),
                                       Center(
-                                          child: Text('Google Account ',
+                                          child: Text(' Connexion avec Google',
                                               textAlign: TextAlign.right)),
                                     ],
                                   ),
@@ -285,12 +290,12 @@ class _SignInPageState extends State<SignInPage> {
                           padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                           child: Row(
                             children: [
-                              Text("Don't have an account ?"),
+                              Text("Pas de compte ?"),
                               TextButton(
                                   onPressed: () {
                                     Navigator.pushNamed(context, "/SignUp");
                                   },
-                                  child: const Text("Sign Up"))
+                                  child: const Text("Créez en un "))
                             ],
                           ),
                         ),

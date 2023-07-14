@@ -94,7 +94,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                           color: Theme.of(context).colorScheme.primary,
                         )),
                     Text(
-                      "Profil",
+                      "Profile",
                       style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
