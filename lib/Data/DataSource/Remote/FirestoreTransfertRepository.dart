@@ -93,7 +93,7 @@ class FirestoreTransfertRepository implements TransfertRepository {
       'read': false,
       'accept': false,
       'reject': false,
-      'exchange':false,
+      'exchange': false,
       'createdAt': DateTime.now(),
       'receiptAt': null
     }).then((DocumentReference doc) => transfert.transfertId = doc.id);
@@ -103,6 +103,7 @@ class FirestoreTransfertRepository implements TransfertRepository {
   Stream<List<Transfert>> getUserTravellerTansferts(String userId) {
     return _collectionReference
         .where("TravellerId", isEqualTo: userId)
+//        .orderBy("createdAt", descending: true)
         .snapshots()
         .asyncMap(
             (snapshot) async => Future.wait(snapshot.docs.map((doc) async {
@@ -114,6 +115,20 @@ class FirestoreTransfertRepository implements TransfertRepository {
   Stream<List<Transfert>> getByTravelTansferts(String id) {
     return _collectionReference
         .where("travelId", isEqualTo: id)
+        .where("accept", isEqualTo: true)
+//        .orderBy("createdAt", descending: true)
+        .snapshots()
+        .asyncMap(
+            (snapshot) async => Future.wait(snapshot.docs.map((doc) async {
+                  return documentsnapshotToTransfert(doc);
+                }).toList()));
+  }
+
+  Stream<List<Transfert>> getByTravelAcceptTansferts(String id) {
+    return _collectionReference
+        .where("travelId", isEqualTo: id)
+        .where("accept", isEqualTo: true)
+//        .orderBy("createdAt", descending: true)
         .snapshots()
         .asyncMap(
             (snapshot) async => Future.wait(snapshot.docs.map((doc) async {
@@ -125,6 +140,8 @@ class FirestoreTransfertRepository implements TransfertRepository {
   Stream<List<Transfert>> getUserReceiverTansferts(String userId) {
     return _collectionReference
         .where("ReceiverId", isEqualTo: userId)
+        .where("accept", isEqualTo: true)
+//        .orderBy("createdAt", descending: true)
         .snapshots()
         .asyncMap(
             (snapshot) async => Future.wait(snapshot.docs.map((doc) async {
@@ -136,6 +153,8 @@ class FirestoreTransfertRepository implements TransfertRepository {
   Stream<List<Transfert>> getUserSenderTansferts(String userId) {
     return _collectionReference
         .where("SenderId", isEqualTo: userId)
+        .where("accept", isEqualTo: true)
+//        .orderBy("createdAt", descending: true)
         .snapshots()
         .asyncMap(
             (snapshot) async => Future.wait(snapshot.docs.map((doc) async {
@@ -157,6 +176,7 @@ class FirestoreTransfertRepository implements TransfertRepository {
     QuerySnapshot snapshot = await _collectionReference
         .where("code", isEqualTo: int.parse(code))
         .where("finish", isEqualTo: false)
+//        .orderBy("createdAt", descending: true)
         .get();
 
     if (snapshot.docs.isEmpty) {
@@ -235,6 +255,7 @@ class FirestoreTransfertRepository implements TransfertRepository {
   Stream<int> getSenderTransferCount(String id) {
     return _collectionReference
         .where("SenderId", isEqualTo: id)
+//        .orderBy("createdAt", descending: true)
         .snapshots()
         .map((snapshot) => snapshot.docs.length);
   }
@@ -243,6 +264,7 @@ class FirestoreTransfertRepository implements TransfertRepository {
   Stream<int> getTravellerTransferCount(String id) {
     return _collectionReference
         .where("TravellerId", isEqualTo: id)
+//        .orderBy("createdAt", descending: true)
         .snapshots()
         .map((snapshot) => snapshot.docs.length);
   }

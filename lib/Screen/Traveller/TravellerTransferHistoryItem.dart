@@ -40,7 +40,7 @@ class _TravellerTransferHistoryItemState
         children: [
           Container(
               color:
-                  widget.transfert.isRead ? Colors.white : Colors.grey.shade400,
+                  Colors.white,
               child: ListTileTheme(
                 child: Column(
                   children: [
@@ -98,7 +98,7 @@ class _TravellerTransferHistoryItemState
                                             title: Text(
                                                 "Description du transfert")),
                                         body: TranferDescriptionItem(
-                                            widget.transfert, true),
+                                            widget.transfert, false,false),
                                       ))),
                           child: const Text("Voir"),
                           style: ElevatedButton.styleFrom(

@@ -150,6 +150,6 @@ class _ReceiverAddState extends State<ReceiverAdd> {
                   ),
                 ),
               )
-            : TranferDescriptionItem(widget.transfert!, true));
+            : TranferDescriptionItem(widget.transfert!, true,false));
   }
 }

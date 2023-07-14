@@ -20,7 +20,7 @@ class _NotificationMessageItemState extends State<NotificationMessageItem> {
       appBar: AppBar(
         title: const Text("Détail Notification"),
       ),
-      body: TranferDescriptionItem(widget.transfert,false),
+      body: TranferDescriptionItem(widget.transfert,false,false),
     );
   }
 }

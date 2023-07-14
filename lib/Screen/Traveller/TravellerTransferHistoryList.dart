@@ -16,9 +16,9 @@ class TravellerTransferHistoryList extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Colis transporté"),),
+      appBar: AppBar(title: const Text("Colis transport"),),
       body: StreamBuilder(
-        stream: TransfertManager().getByTravelTansferts(travel.travelId),
+        stream: TransfertManager().getByTravelAcceptTansferts(travel.travelId),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             List<Transfert> transfertData = snapshot.data!;

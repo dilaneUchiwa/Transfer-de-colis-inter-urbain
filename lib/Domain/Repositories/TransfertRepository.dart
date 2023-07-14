@@ -3,6 +3,7 @@ import '/Domain/Model/Transfert.dart';
 abstract class TransfertRepository {
   Future<void> addTransfert(Transfert transfert);
   Future<Transfert?> getTransfertById(String id);
+  Stream<List<Transfert>> getByTravelAcceptTansferts(String id);
   Future<Transfert?> getTransfertByCode(String code);
   Future<void> updateTransfert(Transfert transfert);
   Future<void> updateTransfertReceiverAdd(Transfert transfert, String id);

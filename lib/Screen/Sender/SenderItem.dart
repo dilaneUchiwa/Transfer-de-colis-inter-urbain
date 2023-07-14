@@ -89,16 +89,17 @@ class _SenderPackageItemState extends State<SenderPackageItem> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
+                        widget.transfert.isfinish?const Text(""):
                         ElevatedButton(
                           onPressed: () {
-                            // Navigator.push(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //         builder: (context) => MapScreen()));
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => MapScreen(widget.transfert)));
                           },
                           child: const Text("Suivre le colis"),
                           style: ElevatedButton.styleFrom(
-                              primary: Theme.of(context).primaryColor,
+                              primary: Colors.orange.shade800,
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 8,
                                 vertical: 5,
@@ -108,7 +109,7 @@ class _SenderPackageItemState extends State<SenderPackageItem> {
                               )),
                         ),
                         const SizedBox(width: 10),
-                        widget.transfert.isfinish
+                        widget.transfert.isexchange
                             ? const Text("")
                             : ElevatedButton(
                                 onPressed: () {
@@ -131,19 +132,19 @@ class _SenderPackageItemState extends State<SenderPackageItem> {
                                             key: _formKey,
                                             child: Column(
                                               crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                                                  CrossAxisAlignment.center,
                                               children: [
-                                                SizedBox(height: 16.0),
+                                                SizedBox(height: 8.0),
                                                 Text(
                                                   'Le code a été généré au début de la transaction . le même code doit être utilisé pour confirmer l\'échange',
-                                                  style:
-                                                      TextStyle(fontSize: 16.0),
+                                                  style: TextStyle(
+                                                      fontSize: 16.0),
                                                 ),
                                                 SizedBox(height: 20),
                                                 Text(
                                                   'Veuillez saisir le code ci-dessous :',
-                                                  style:
-                                                      TextStyle(fontSize: 16.0),
+                                                  style: TextStyle(
+                                                      fontSize: 16.0),
                                                 ),
                                                 SizedBox(height: 16.0),
                                                 TextFormField(
@@ -176,10 +177,12 @@ class _SenderPackageItemState extends State<SenderPackageItem> {
                                                         if (_formKey
                                                             .currentState!
                                                             .validate()) {
-                                                          _formKey.currentState!
+                                                          _formKey
+                                                              .currentState!
                                                               .save();
 
-                                                          Transfert? transfert =
+                                                          Transfert?
+                                                              transfert =
                                                               await TransfertManager()
                                                                   .getTransfertByCode(
                                                                       "$code");
@@ -197,8 +200,8 @@ class _SenderPackageItemState extends State<SenderPackageItem> {
                                                                     AlertDialog(
                                                                       content:
                                                                           SizedBox(
-                                                                        height: MediaQuery.of(context).size.height *
-                                                                            0.20,
+                                                                        height:
+                                                                            MediaQuery.of(context).size.height * 0.20,
                                                                         child: Center(
                                                                             child: Column(
                                                                           mainAxisAlignment:
@@ -226,8 +229,7 @@ class _SenderPackageItemState extends State<SenderPackageItem> {
                                                                         MaterialButton(
                                                                           onPressed:
                                                                               () {
-                                                                            Navigator.pop(context,
-                                                                                'Annuler');
+                                                                            Navigator.pop(context, 'Annuler');
                                                                           },
                                                                           child:
                                                                               const Text('Fermer'),
@@ -244,10 +246,49 @@ class _SenderPackageItemState extends State<SenderPackageItem> {
                                                                       .exchange =
                                                                   true;
                                                             });
-                                                            showNotificationSuccessWithDuration(
-                                                                context,
-                                                                "l'échange de colis a été enregistré",
-                                                                10);
+                                                            Navigator.pop(
+                                                                context);
+
+                                                            showDialog(
+                                                                barrierDismissible:
+                                                                    false,
+                                                                context:
+                                                                    context,
+                                                                builder: (BuildContext
+                                                                        context) =>
+                                                                    AlertDialog(
+                                                                      content:
+                                                                          SizedBox(
+                                                                        height:
+                                                                            MediaQuery.of(context).size.height * 0.10,
+                                                                        child: Center(
+                                                                            child: Column(
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.center,
+                                                                          crossAxisAlignment:
+                                                                              CrossAxisAlignment.center,
+                                                                          children: [
+                                                                            const SizedBox(height: 40),
+                                                                            const Text(
+                                                                              "l'échange de colis a été enregistré",
+                                                                              textAlign: TextAlign.center,
+                                                                            ),
+                                                                            const SizedBox(height: 40),
+                                                                          ],
+                                                                        )),
+                                                                      ),
+                                                                      actions: <
+                                                                          Widget>[
+                                                                        MaterialButton(
+                                                                          onPressed:
+                                                                              () {
+                                                                            Navigator.pop(context, 'Annuler');
+                                                                          },
+                                                                          child:
+                                                                              const Text('Fermer'),
+                                                                        )
+                                                                      ],
+                                                                    ));
                                                           }
                                                         }
                                                       },
@@ -272,7 +313,7 @@ class _SenderPackageItemState extends State<SenderPackageItem> {
                                       borderRadius: BorderRadius.circular(50),
                                     )),
                               ),
-                        const SizedBox(width: 10),
+                        const SizedBox(width: 5),
                         ElevatedButton(
                           onPressed: () => Navigator.push(
                               context,
@@ -282,7 +323,7 @@ class _SenderPackageItemState extends State<SenderPackageItem> {
                                             title: Text(
                                                 "Description du transfert")),
                                         body: TranferDescriptionItem(
-                                            widget.transfert, true),
+                                            widget.transfert, true,true),
                                       ))),
                           child: const Text("Voir"),
                           style: ElevatedButton.styleFrom(

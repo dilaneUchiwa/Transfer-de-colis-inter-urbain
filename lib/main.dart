@@ -1,6 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:transfert_colis_interurbain/Config/AppConfig.dart';
+import 'package:transfert_colis_interurbain/Domain/Model/UserApp.dart';
 import 'package:transfert_colis_interurbain/Screen/Notification/NotificationPage.dart';
 import 'package:transfert_colis_interurbain/Screen/Receiver/ReceiverAdd.dart';
 import 'package:transfert_colis_interurbain/Screen/Traveller/TravelerAdd.dart';
@@ -39,13 +41,12 @@ Future<void> main() async {
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({super.key});
-
-  String? userToken;
+  const MyApp({super.key});
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       color: Colors.black12,

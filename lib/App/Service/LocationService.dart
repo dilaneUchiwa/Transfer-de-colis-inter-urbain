@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -149,22 +150,23 @@ void onStart(ServiceInstance service) async {
     // }
 
     /// you can see this log in logcat
-    print('FLUTTER BACKGROUND SERVICE: ${DateTime.now()}');
+   // print('FLUTTER BACKGROUND SERVICE: ${DateTime.now()}');
     final position = await _determinePosition();
 
     // Ajouter les coordonnées géographiques à une base de données Realtime Database
 
-    DatabaseReference databaseReference =
-        FirebaseDatabase.instance.ref().child('locations');
-    databaseReference.push().set({
+    var databaseReference = FirebaseFirestore.instance.collection('locations');
+
+    databaseReference.add({
       'userId': AppConfig.UserId,
       'latitude': position.latitude,
       'longitude': position.longitude,
+      "timestamp": DateTime.now()
     });
 
-    print(
-        'UserId : ${AppConfig.UserId} Latitude: ${position.latitude} , Longitude : ${position.longitude}');
-    // test using external plugin
+    // print(
+    //     'UserId : ${AppConfig.UserId} Latitude: ${position.latitude} , Longitude : ${position.longitude}');
+    // // test using external plugin
     final deviceInfo = DeviceInfoPlugin();
     String? device;
     if (Platform.isAndroid) {

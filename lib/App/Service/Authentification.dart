@@ -69,14 +69,17 @@ class AuthentificationService {
     try {
       final user = await UserManager().getUserByEmail(email);
 
-      // if (user != null) {
-      //   AuthentificationService()
-      //       .signUpWithEmailAndPassword(user.userEmail!, user.userPassword!);
-      // }
 
-      final result = await _auth.signInWithEmailAndPassword(
+      var result = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
         
+      
+      if (user != null && result==null) {
+        AuthentificationService()
+            .signUpWithEmailAndPassword(user.userEmail!, user.userPassword!);
+             result = await _auth.signInWithEmailAndPassword(
+          email: email, password: password);
+      }
       if (result.user != null) {
         final userApp = await UserManager().getUserByEmail(result.user!.email!);
 

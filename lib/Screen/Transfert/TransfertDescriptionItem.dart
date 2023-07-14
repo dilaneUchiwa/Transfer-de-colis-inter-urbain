@@ -17,7 +17,9 @@ import '../Widgets/showSnackBar.dart';
 class TranferDescriptionItem extends StatefulWidget {
   Transfert transfert;
   bool receiverUse;
-  TranferDescriptionItem(this.transfert, this.receiverUse, {super.key});
+  bool Sender;
+  TranferDescriptionItem(this.transfert, this.receiverUse, this.Sender,
+      {super.key});
 
   @override
   State<TranferDescriptionItem> createState() => _TranferDescriptionItemState();
@@ -277,6 +279,52 @@ class _TranferDescriptionItemState extends State<TranferDescriptionItem> {
                   ],
                 ),
                 const SizedBox(height: 10),
+                !widget.transfert.isexchange
+                    ? const Text(
+                        "L'échange de colis n'a pas eu lieu ",
+                        style: TextStyle(
+                            color: Colors.red,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            fontStyle: FontStyle.italic),
+                      )
+                    : widget.Sender
+                        ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                "L'échange de colis a déjà  été éffectué ",
+                                style: TextStyle(
+                                    color: Colors.green,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                    fontStyle: FontStyle.italic),
+                              ),
+                              const SizedBox(height: 10),
+                              Row(
+                                children: [
+                                  const Text("code de Transfert : ",
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold)),
+                                  Text("${widget.transfert.code}",
+                                      style: const TextStyle(
+                                          fontSize: 18,
+                                          color: Themes.textcolor,
+                                          fontWeight: FontWeight.bold))
+                                ],
+                              ),
+                            ],
+                          )
+                        : const Text(
+                            "L'échange de colis a déjà  été éffectué ",
+                            style: TextStyle(
+                                color: Colors.green,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                                fontStyle: FontStyle.italic),
+                          ),
+                const SizedBox(height: 10),
                 widget.transfert.isReject
                     ? const Text(
                         "Vous avez déjà rejecté cette demande de transfert de colis",
@@ -288,63 +336,69 @@ class _TranferDescriptionItemState extends State<TranferDescriptionItem> {
                       )
                     : Row(),
                 widget.transfert.isAccept
-                    ? Column(
-                        children: [
-                          const Text(
-                            "Vous avez déjà accepté cette demande de transfert de colis",
-                            style: TextStyle(
-                                color: Colors.green,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                                fontStyle: FontStyle.italic),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Row(
+                    ? widget.Sender
+                        ? const Text("")
+                        : Column(
                             children: [
-                              const Text("code de Transfert : ",
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold)),
-                              Text("${widget.transfert.code}",
-                                  style: const TextStyle(
-                                      fontSize: 18,
-                                      color: Themes.textcolor,
-                                      fontWeight: FontWeight.bold))
-                            ],
-                          ),
-                          widget.receiverUse
-                              ? Column(
-                                  children: [
-                                    const SizedBox(height: 15),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                              const Text(
+                                "Vous avez déjà accepté cette demande de transfert de colis",
+                                style: TextStyle(
+                                    color: Colors.green,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                    fontStyle: FontStyle.italic),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Row(
+                                children: [
+                                  const Text("code de Transfert : ",
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold)),
+                                  Text("${widget.transfert.code}",
+                                      style: const TextStyle(
+                                          fontSize: 18,
+                                          color: Themes.textcolor,
+                                          fontWeight: FontWeight.bold))
+                                ],
+                              ),
+                              widget.receiverUse
+                                  ? Column(
                                       children: [
-                                        ElevatedButton(
-                                            onPressed: () {
-                                              Navigator.pushReplacementNamed(
-                                                  context, "/ReceiverAdd");
-                                            },
-                                            child: Text("Revenir")),
-                                        const SizedBox(width: 40),
-                                        ElevatedButton(
-                                            onPressed: () async {
-                                              await TransfertManager()
-                                                  .updateTransfertReceiverAdd(
-                                                      widget.transfert,user.userId!);
-                                                      Navigator.pop(context);
-                                            },
-                                            child: Text("C'est le bon colis")),
+                                        const SizedBox(height: 15),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            ElevatedButton(
+                                                onPressed: () {
+                                                  Navigator
+                                                      .pushReplacementNamed(
+                                                          context,
+                                                          "/ReceiverAdd");
+                                                },
+                                                child: Text("Revenir")),
+                                            const SizedBox(width: 40),
+                                            ElevatedButton(
+                                                onPressed: () async {
+                                                  await TransfertManager()
+                                                      .updateTransfertReceiverAdd(
+                                                          widget.transfert,
+                                                          user.userId!);
+                                                  Navigator.pop(context);
+                                                },
+                                                child:
+                                                    Text("C'est le bon colis")),
+                                          ],
+                                        ),
+                                        const SizedBox(width: 5),
                                       ],
-                                    ),
-                                    const SizedBox(width: 5),
-                                  ],
-                                )
-                              : const Text("")
-                        ],
-                      )
+                                    )
+                                  : const Text("")
+                            ],
+                          )
                     : Row(),
                 widget.transfert.isAccept || widget.transfert.isReject
                     ? Row()

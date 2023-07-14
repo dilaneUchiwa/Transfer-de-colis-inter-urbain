@@ -10,6 +10,7 @@ import 'package:transfert_colis_interurbain/Utils/Converter.dart';
 import '../../Utils/InternetChecker.dart';
 import '../Transfert/TransfertDescriptionItem.dart';
 import '../Widgets/showSnackBar.dart';
+import '../localisation/location.dart';
 
 class ReceiverUserItem extends StatefulWidget {
   Transfert transfert;
@@ -149,24 +150,27 @@ class _ReceiverUserItemState extends State<ReceiverUserItem> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  ElevatedButton(
-                    onPressed: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => TranferDescriptionItem(
-                                widget.transfert, false))),
-                    child: const Text("Suivre le colis"),
-                    style: ElevatedButton.styleFrom(
-                        primary: Colors.red,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 5,
+                  widget.transfert.isfinish
+                      ? const Text("")
+                      : ElevatedButton(
+                          onPressed: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      MapScreen(widget.transfert))),
+                          child: const Text("Suivre le colis"),
+                          style: ElevatedButton.styleFrom(
+                              primary: Colors.orange.shade800,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 5,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50),
+                              )),
                         ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(50),
-                        )),
-                  ),
                   const SizedBox(width: 20),
+                  widget.transfert.isfinish?const Text(""):
                   ElevatedButton(
                     onPressed: () async => {
                       showDialog(
@@ -185,7 +189,9 @@ class _ReceiverUserItemState extends State<ReceiverUserItem> {
                                               0.18,
                                       child: const Center(
                                         child: Text(
-                                            "Etes vous sur de vouloir refuser de transférer ce colis"),
+                                          "Etes vous sur de vouloir confirmer avoir recu ce colis",
+                                          textAlign: TextAlign.center,
+                                        ),
                                       )),
                                   actions: <Widget>[
                                     MaterialButton(
@@ -204,63 +210,76 @@ class _ReceiverUserItemState extends State<ReceiverUserItem> {
                                           setState(() {
                                             widget.transfert.finish = true;
                                           });
-                                          showDialog(
-                                              barrierDismissible: false,
-                                              context: context,
-                                              builder: (BuildContext context) =>
-                                                  AlertDialog(
-                                                    content: SizedBox(
-                                                      height:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .height *
-                                                              0.20,
-                                                      child: Center(
-                                                          child: Column(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .center,
-                                                        children: [
-                                                          const SizedBox(
-                                                              height: 40),
-                                                          const Text(
-                                                              "Le code de transfert"),
-                                                          const SizedBox(
-                                                              height: 5),
-                                                          Text(
-                                                            "${widget.transfert.code}",
-                                                            style: const TextStyle(
-                                                                fontSize: 18,
-                                                                color: Themes
-                                                                    .textcolor,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold),
-                                                          ),
-                                                          const SizedBox(
-                                                              height: 5),
-                                                          const Text(
-                                                            "Le colis a été marqué comme recu",
-                                                            textAlign: TextAlign
-                                                                .center,
-                                                          )
-                                                        ],
-                                                      )),
-                                                    ),
-                                                    actions: <Widget>[
-                                                      MaterialButton(
-                                                        onPressed: () {
-                                                          Navigator.pop(context,
-                                                              'Annuler');
-                                                        },
-                                                        child: const Text(
-                                                            'Fermer'),
-                                                      )
-                                                    ],
-                                                  ));
+                                          //Navigator.pop(context);
+                                          showNotificationSuccess(context,
+                                              "Le colis a été marqué comme recu");
+                                          // showDialog(
+                                          //     barrierDismissible: false,
+                                          //     context: context,
+                                          //     builder: (BuildContext context) =>
+                                          //         AlertDialog(
+                                          //           title: Text(
+                                          //             "RESULTAT".toUpperCase(),
+                                          //             style: TextStyle(
+                                          //                 fontSize: 16,
+                                          //                 fontWeight:
+                                          //                     FontWeight.bold,
+                                          //                 color: Theme.of(
+                                          //                         context)
+                                          //                     .primaryColor),
+                                          //           ),
+                                          //           content: SizedBox(
+                                          //             height:
+                                          //                 MediaQuery.of(context)
+                                          //                         .size
+                                          //                         .height *
+                                          //                     0.20,
+                                          //             child: Center(
+                                          //                 child: Column(
+                                          //               mainAxisAlignment:
+                                          //                   MainAxisAlignment
+                                          //                       .center,
+                                          //               crossAxisAlignment:
+                                          //                   CrossAxisAlignment
+                                          //                       .center,
+                                          //               children: [
+                                          //                 const SizedBox(
+                                          //                     height: 40),
+                                          //                 const Text(
+                                          //                     "code de transfert"),
+                                          //                 const SizedBox(
+                                          //                     height: 5),
+                                          //                 Text(
+                                          //                   "${widget.transfert.code}",
+                                          //                   style: const TextStyle(
+                                          //                       fontSize: 18,
+                                          //                       color: Themes
+                                          //                           .textcolor,
+                                          //                       fontWeight:
+                                          //                           FontWeight
+                                          //                               .bold),
+                                          //                 ),
+                                          //                 const SizedBox(
+                                          //                     height: 5),
+                                          //                 const Text(
+                                          //                   "Le colis a été marqué comme recu",
+                                          //                   textAlign: TextAlign
+                                          //                       .center,
+                                          //                 )
+                                          //               ],
+                                          //             )),
+                                          //           ),
+                                          //           actions: <Widget>[
+                                          //             MaterialButton(
+                                          //               onPressed: () {
+                                          //                 Navigator.pop(context,
+                                          //                     'Annuler');
+                                          //               },
+                                          //               child: const Text(
+                                          //                   'Fermer'),
+                                          //             )
+                                          //           ],
+                                          //         ));
                                         } else {
                                           showNotificationError(context,
                                               "Pas de connexion internet !");
@@ -292,7 +311,7 @@ class _ReceiverUserItemState extends State<ReceiverUserItem> {
                                   appBar: AppBar(
                                       title: Text("Description du transfert")),
                                   body: TranferDescriptionItem(
-                                      widget.transfert, false),
+                                      widget.transfert, false, false),
                                 ))),
                     child: const Text("Voir"),
                     style: ElevatedButton.styleFrom(

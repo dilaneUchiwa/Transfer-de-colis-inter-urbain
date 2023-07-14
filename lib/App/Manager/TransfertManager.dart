@@ -70,6 +70,9 @@ class TransfertManager {
   Stream<List<Transfert>> getByTravelTansferts(String travelId) {
     return _firestoreTransfertRepository.getByTravelTansferts(travelId);
   }
+  Stream<List<Transfert>> getByTravelAcceptTansferts(String travelId) {
+    return _firestoreTransfertRepository.getByTravelAcceptTansferts(travelId);
+  }
 
   Stream<List<Transfert>> getUserReceiverTansferts(String userId) {
     return _firestoreTransfertRepository.getUserReceiverTansferts(userId);
