@@ -50,7 +50,7 @@ class _SignInPageState extends State<SignInPage> {
                       children: [
                         const SizedBox(height: 20),
                         const Text(
-                          "Bienvenu sur Easy Transfer",textAlign: TextAlign.center,
+                          "Bienvenue sur Easy Transfer",textAlign: TextAlign.center,
                           style: TextStyle(fontSize: 35,fontWeight: FontWeight.bold),
                         ),
 

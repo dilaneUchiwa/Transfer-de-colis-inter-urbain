@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:transfert_colis_interurbain/Screen/SearchPage.dart';
 
 class SearchWidget extends StatelessWidget {
   const SearchWidget({super.key});
@@ -32,7 +33,10 @@ class SearchWidget extends StatelessWidget {
           ),
         ),
         onPressed: () {
-          Navigator.pushNamed(context, '/search');
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => SearchPage()));
         });
   }
 }

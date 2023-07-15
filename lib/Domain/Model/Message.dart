@@ -1,7 +1,7 @@
 class Message {
   String _message;
   DateTime _timestamp;
-
+  
   Message(this._message,this._timestamp);
 
   DateTime get timestamp => _timestamp;
@@ -15,6 +15,5 @@ class Message {
   set message(String value) {
     _message = value;
   }
-
 
 }

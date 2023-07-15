@@ -2,8 +2,13 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:transfert_colis_interurbain/App/Manager/ContactManager.dart';
+import 'package:transfert_colis_interurbain/Config/Theme/Theme.dart';
+import 'package:transfert_colis_interurbain/Domain/Model/Contact.dart';
+import 'package:transfert_colis_interurbain/Domain/Model/UserApp.dart';
 import '../constants/constants.dart';
 import '../providers/providers.dart';
 import '../utils/utils.dart';
@@ -27,7 +32,8 @@ class HomePageChatState extends State<HomePageChat> {
   HomePageChatState({Key? key});
 
   final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
   final GoogleSignIn googleSignIn = GoogleSignIn();
   final ScrollController listScrollController = ScrollController();
 
@@ -36,33 +42,16 @@ class HomePageChatState extends State<HomePageChat> {
   String _textSearch = "";
   bool isLoading = false;
 
-  late final AuthProvider authProvider = context.read<AuthProvider>();
-  late final HomeProvider homeProvider = context.read<HomeProvider>();
-  late final String currentUserId;
-
   final Debouncer searchDebouncer = Debouncer(milliseconds: 300);
   final StreamController<bool> btnClearController = StreamController<bool>();
   final TextEditingController searchBarTec = TextEditingController();
 
-  final List<PopupChoices> choices = <PopupChoices>[
-    PopupChoices(title: 'Settings', icon: Icons.settings),
-    PopupChoices(title: 'Log out', icon: Icons.exit_to_app),
-  ];
-
   @override
   void initState() {
     super.initState();
-    if (authProvider.getUserFirebaseId()?.isNotEmpty == true) {
-      currentUserId = authProvider.getUserFirebaseId()!;
-    } else {
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => LoginPage()),
-        (Route<dynamic> route) => false,
-      );
-    }
-    registerNotification();
-    configLocalNotification();
-    listScrollController.addListener(scrollListener);
+    // registerNotification();
+    // configLocalNotification();
+    // listScrollController.addListener(scrollListener);
   }
 
   @override
@@ -81,20 +70,13 @@ class HomePageChatState extends State<HomePageChat> {
       }
       return;
     });
-
-    firebaseMessaging.getToken().then((token) {
-      print('push token: $token');
-      if (token != null) {
-        homeProvider.updateDataFirestore(FirestoreConstants.pathUserCollection, currentUserId, {'pushToken': token});
-      }
-    }).catchError((err) {
-      Fluttertoast.showToast(msg: err.message.toString());
-    });
   }
 
-  void configLocalNotification() {  
-    AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('app_icon');
-    DarwinInitializationSettings initializationSettingsIOS = DarwinInitializationSettings();
+  void configLocalNotification() {
+    AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('app_icon');
+    DarwinInitializationSettings initializationSettingsIOS =
+        DarwinInitializationSettings();
     InitializationSettings initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
       iOS: initializationSettingsIOS,
@@ -103,7 +85,8 @@ class HomePageChatState extends State<HomePageChat> {
   }
 
   void scrollListener() {
-    if (listScrollController.offset >= listScrollController.position.maxScrollExtent &&
+    if (listScrollController.offset >=
+            listScrollController.position.maxScrollExtent &&
         !listScrollController.position.outOfRange) {
       setState(() {
         _limit += _limitIncrement;
@@ -111,24 +94,20 @@ class HomePageChatState extends State<HomePageChat> {
     }
   }
 
-  void onItemMenuPress(PopupChoices choice) {
-    if (choice.title == 'Log out') {
-      handleSignOut();
-    } else {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage()));
-    }
-  }
-
   void showNotification(RemoteNotification remoteNotification) async {
-    AndroidNotificationDetails androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      Platform.isAndroid ? 'com.dfa.flutterchatdemo' : 'com.duytq.flutterchatdemo',
+    AndroidNotificationDetails androidPlatformChannelSpecifics =
+        AndroidNotificationDetails(
+      Platform.isAndroid
+          ? 'com.dfa.flutterchatdemo'
+          : 'com.duytq.flutterchatdemo',
       'Flutter chat demo',
       playSound: true,
       enableVibration: true,
       importance: Importance.max,
       priority: Priority.high,
     );
-    DarwinNotificationDetails iOSPlatformChannelSpecifics = DarwinNotificationDetails();
+    DarwinNotificationDetails iOSPlatformChannelSpecifics =
+        DarwinNotificationDetails();
     NotificationDetails platformChannelSpecifics = NotificationDetails(
       android: androidPlatformChannelSpecifics,
       iOS: iOSPlatformChannelSpecifics,
@@ -145,161 +124,60 @@ class HomePageChatState extends State<HomePageChat> {
     );
   }
 
-  Future<bool> onBackPress() {
-    openDialog();
-    return Future.value(false);
-  }
-
-  Future<void> openDialog() async {
-    switch (await showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return SimpleDialog(
-            clipBehavior: Clip.hardEdge,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            contentPadding: EdgeInsets.zero,
-            children: <Widget>[
-              Container(
-                color: ColorConstants.themeColor,
-                padding: EdgeInsets.only(bottom: 10, top: 10),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Container(
-                      child: Icon(
-                        Icons.exit_to_app,
-                        size: 30,
-                        color: Colors.white,
-                      ),
-                      margin: EdgeInsets.only(bottom: 10),
-                    ),
-                    Text(
-                      'Exit app',
-                      style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      'Are you sure to exit app?',
-                      style: TextStyle(color: Colors.white70, fontSize: 14),
-                    ),
-                  ],
-                ),
-              ),
-              SimpleDialogOption(
-                onPressed: () {
-                  Navigator.pop(context, 0);
-                },
-                child: Row(
-                  children: <Widget>[
-                    Container(
-                      child: Icon(
-                        Icons.cancel,
-                        color: ColorConstants.primaryColor,
-                      ),
-                      margin: EdgeInsets.only(right: 10),
-                    ),
-                    Text(
-                      'Cancel',
-                      style: TextStyle(color: ColorConstants.primaryColor, fontWeight: FontWeight.bold),
-                    )
-                  ],
-                ),
-              ),
-              SimpleDialogOption(
-                onPressed: () {
-                  Navigator.pop(context, 1);
-                },
-                child: Row(
-                  children: <Widget>[
-                    Container(
-                      child: Icon(
-                        Icons.check_circle,
-                        color: ColorConstants.primaryColor,
-                      ),
-                      margin: EdgeInsets.only(right: 10),
-                    ),
-                    Text(
-                      'Yes',
-                      style: TextStyle(color: ColorConstants.primaryColor, fontWeight: FontWeight.bold),
-                    )
-                  ],
-                ),
-              ),
-            ],
-          );
-        })) {
-      case 0:
-        break;
-      case 1:
-        exit(0);
-    }
-  }
-
-  Future<void> handleSignOut() async {
-    authProvider.handleSignOut();
-    Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (context) => LoginPage()),
-      (Route<dynamic> route) => false,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          AppConstants.homeTitle,
-          style: TextStyle(color: ColorConstants.primaryColor),
-        ),
-        centerTitle: true,
-        actions: <Widget>[buildPopupMenu()],
-      ),
-      body: SafeArea(
-        child: WillPopScope(
-          child: Stack(
-            children: <Widget>[
-              // List
-              Column(
-                children: [
-                  buildSearchBar(),
-                  Expanded(
-                    child: StreamBuilder<QuerySnapshot>(
-                      stream:
-                          homeProvider.getStreamFireStore(FirestoreConstants.pathUserCollection, _limit, _textSearch),
-                      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                        if (snapshot.hasData) {
-                          if ((snapshot.data?.docs.length ?? 0) > 0) {
-                            return ListView.builder(
-                              padding: EdgeInsets.all(10),
-                              itemBuilder: (context, index) => buildItem(context, snapshot.data?.docs[index]),
-                              itemCount: snapshot.data?.docs.length,
-                              controller: listScrollController,
-                            );
-                          } else {
-                            return Center(
-                              child: Text("No users"),
-                            );
-                          }
-                        } else {
-                          return Center(
-                            child: CircularProgressIndicator(
-                              color: ColorConstants.themeColor,
-                            ),
-                          );
-                        }
-                      },
-                    ),
-                  ),
-                ],
-              ),
+    final user = Provider.of<UserApp>(context);
+    return SafeArea(
+      child: Stack(
+        children: [
+          // List
+          Column(
+            children: [
+              buildSearchBar(),
+              Expanded(
+                child: StreamBuilder(
+                  stream: ContactManager().getWithMeContacts(user),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      List<Contact> contactData = snapshot.data!;
 
-              // Loading
-              Positioned(
-                child: isLoading ? LoadingView() : SizedBox.shrink(),
-              )
+                      
+                      if (contactData.isNotEmpty) {
+                        return SingleChildScrollView(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                Column(
+                                  children: contactData.map((contact) {
+                                    return UserItemWidget(context, contact);
+                                  }).toList(),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      } else {
+                        return const Center(
+                          child: Text("Aucune discussion"),
+                        );
+                      }
+                    } else {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                  },
+                ),
+              ),
             ],
           ),
-          onWillPop: onBackPress,
-        ),
+
+          // Loading
+          Positioned(
+            child: isLoading ? LoadingView() : SizedBox.shrink(),
+          )
+        ],
       ),
     );
   }
@@ -332,8 +210,9 @@ class HomePageChatState extends State<HomePageChat> {
                 });
               },
               decoration: InputDecoration.collapsed(
-                hintText: 'Search nickname (you have to type exactly string)',
-                hintStyle: TextStyle(fontSize: 13, color: ColorConstants.greyColor),
+                hintText: 'Rechercher une personne ...',
+                hintStyle:
+                    TextStyle(fontSize: 13, color: ColorConstants.greyColor),
               ),
               style: TextStyle(fontSize: 13),
             ),
@@ -350,7 +229,8 @@ class HomePageChatState extends State<HomePageChat> {
                             _textSearch = "";
                           });
                         },
-                        child: Icon(Icons.clear_rounded, color: ColorConstants.greyColor, size: 20))
+                        child: Icon(Icons.clear_rounded,
+                            color: ColorConstants.greyColor, size: 20))
                     : SizedBox.shrink();
               }),
         ],
@@ -364,37 +244,17 @@ class HomePageChatState extends State<HomePageChat> {
     );
   }
 
-  Widget buildPopupMenu() {
-    return PopupMenuButton<PopupChoices>(
-      onSelected: onItemMenuPress,
-      itemBuilder: (BuildContext context) {
-        return choices.map((PopupChoices choice) {
-          return PopupMenuItem<PopupChoices>(
-              value: choice,
-              child: Row(
-                children: <Widget>[
-                  Icon(
-                    choice.icon,
-                    color: ColorConstants.primaryColor,
-                  ),
-                  Container(
-                    width: 10,
-                  ),
-                  Text(
-                    choice.title,
-                    style: TextStyle(color: ColorConstants.primaryColor),
-                  ),
-                ],
-              ));
-        }).toList();
-      },
-    );
-  }
+  Widget UserItemWidget(BuildContext context, Contact contact) {
+    final currentUser = Provider.of<UserApp>(context);
+    UserApp user;
+    if (currentUser.userId == contact.user1.userId) {
+      user = contact.user2;
+    } else {
+      user = contact.user1;
+    }
 
-  Widget buildItem(BuildContext context, DocumentSnapshot? document) {
-    if (document != null) {
-      UserChat userChat = UserChat.fromDocument(document);
-      if (userChat.id == currentUserId) {
+    if (user != null) {
+      if (user.userId == currentUser.userId) {
         return SizedBox.shrink();
       } else {
         return Container(
@@ -402,22 +262,25 @@ class HomePageChatState extends State<HomePageChat> {
             child: Row(
               children: <Widget>[
                 Material(
-                  child: userChat.photoUrl.isNotEmpty
+                  child: user.userPhoto != null
                       ? Image.network(
-                          userChat.photoUrl,
+                          user.userPhoto!,
                           fit: BoxFit.cover,
                           width: 50,
                           height: 50,
-                          loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                          loadingBuilder: (BuildContext context, Widget child,
+                              ImageChunkEvent? loadingProgress) {
                             if (loadingProgress == null) return child;
                             return Container(
                               width: 50,
                               height: 50,
                               child: Center(
                                 child: CircularProgressIndicator(
-                                  color: ColorConstants.themeColor,
-                                  value: loadingProgress.expectedTotalBytes != null
-                                      ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
+                                  color: Themes.textcolor,
+                                  value: loadingProgress.expectedTotalBytes !=
+                                          null
+                                      ? loadingProgress.cumulativeBytesLoaded /
+                                          loadingProgress.expectedTotalBytes!
                                       : null,
                                 ),
                               ),
@@ -445,18 +308,24 @@ class HomePageChatState extends State<HomePageChat> {
                       children: <Widget>[
                         Container(
                           child: Text(
-                            'Nickname: ${userChat.nickname}',
+                            '${user.userName} ${user.userSurname}',
                             maxLines: 1,
-                            style: TextStyle(color: ColorConstants.primaryColor),
+                            style: TextStyle(
+                                color: ColorConstants.primaryColor,
+                                fontSize: 18),
                           ),
                           alignment: Alignment.centerLeft,
                           margin: EdgeInsets.fromLTRB(10, 0, 0, 5),
                         ),
+                        const SizedBox(height: 3),
                         Container(
                           child: Text(
-                            'About me: ${userChat.aboutMe}',
+                            contact.messages.last.message,
                             maxLines: 1,
-                            style: TextStyle(color: ColorConstants.primaryColor),
+                            style: TextStyle(
+                                color: ColorConstants.primaryColor,
+                                fontSize: 12,
+                                fontStyle: FontStyle.italic),
                           ),
                           alignment: Alignment.centerLeft,
                           margin: EdgeInsets.fromLTRB(10, 0, 0, 0),
@@ -476,17 +345,14 @@ class HomePageChatState extends State<HomePageChat> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => ChatPage(
-                    arguments: ChatPageArguments(
-                      peerId: userChat.id,
-                      peerAvatar: userChat.photoUrl,
-                      peerNickname: userChat.nickname,
-                    ),
+                    arguments: ChatPageArguments(contact: contact),
                   ),
                 ),
               );
             },
             style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(ColorConstants.greyColor2),
+              backgroundColor:
+                  MaterialStateProperty.all<Color>(ColorConstants.greyColor2),
               shape: MaterialStateProperty.all<OutlinedBorder>(
                 RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(10)),

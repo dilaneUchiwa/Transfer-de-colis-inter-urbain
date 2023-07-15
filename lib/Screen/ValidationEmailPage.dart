@@ -88,7 +88,7 @@ class _ValidationEmailPageState extends State<ValidationEmailPage> {
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         _formKey.currentState!.save();
-                        if (_validationCode != widget.code) {
+                        if (_validationCode == widget.code) {
                           showNotificationSuccess(
                               context, 'Le code de validation est correct.');
 

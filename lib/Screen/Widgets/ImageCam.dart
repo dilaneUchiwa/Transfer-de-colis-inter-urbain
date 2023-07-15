@@ -32,7 +32,7 @@ class ImageCamFileState extends State<ImageCamFile> {
   Widget build(BuildContext context) {
     // recuperation des données de l'utilisateur connecté
     //final _user  = Provider.of<User?>(context);
-    bool _isLoading=false;
+    bool _isLoading = false;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Vérification de l\'identité'),
@@ -79,7 +79,8 @@ class ImageCamFileState extends State<ImageCamFile> {
                                     ),
                                     onPressed: () =>
                                         pickUserPhoto(ImageSource.gallery),
-                                    child: const Text('Importé depuis la galérie'),
+                                    child:
+                                        const Text('Importé depuis la galérie'),
                                   ),
                                   ElevatedButton(
                                     style: ElevatedButton.styleFrom(
@@ -96,7 +97,8 @@ class ImageCamFileState extends State<ImageCamFile> {
                                   ),
                                   Container(
                                     decoration: const BoxDecoration(),
-                                    padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+                                    padding:
+                                        EdgeInsets.fromLTRB(20, 20, 20, 20),
                                     child: userPhoto != null
                                         ? Image.file(
                                             fit: BoxFit.cover,
@@ -126,7 +128,7 @@ class ImageCamFileState extends State<ImageCamFile> {
                             Text(
                               "Fournisser une image du côté recto de votre CNI",
                               style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
+                                  fontSize: 16, fontWeight: FontWeight.bold),
                             ),
                             SizedBox(
                               height: 20,
@@ -149,7 +151,8 @@ class ImageCamFileState extends State<ImageCamFile> {
                                     ),
                                     onPressed: () =>
                                         pickImageRecto(ImageSource.gallery),
-                                    child: const Text('Importé depuis la galérie'),
+                                    child:
+                                        const Text('Importé depuis la galérie'),
                                   ),
                                   ElevatedButton(
                                     style: ElevatedButton.styleFrom(
@@ -166,7 +169,8 @@ class ImageCamFileState extends State<ImageCamFile> {
                                   ),
                                   Container(
                                     decoration: const BoxDecoration(),
-                                    padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+                                    padding:
+                                        EdgeInsets.fromLTRB(20, 20, 20, 20),
                                     child: imageRecto != null
                                         ? Image.file(
                                             fit: BoxFit.cover,
@@ -219,7 +223,8 @@ class ImageCamFileState extends State<ImageCamFile> {
                                     ),
                                     onPressed: () =>
                                         pickImageVerso(ImageSource.gallery),
-                                    child: const Text('Importé depuis la galérie'),
+                                    child:
+                                        const Text('Importé depuis la galérie'),
                                   ),
                                   ElevatedButton(
                                     style: ElevatedButton.styleFrom(
@@ -236,7 +241,8 @@ class ImageCamFileState extends State<ImageCamFile> {
                                   ),
                                   Container(
                                     decoration: const BoxDecoration(),
-                                    padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+                                    padding:
+                                        EdgeInsets.fromLTRB(20, 20, 20, 20),
                                     child: imageVerso != null
                                         ? Image.file(
                                             fit: BoxFit.cover,
@@ -263,48 +269,51 @@ class ImageCamFileState extends State<ImageCamFile> {
                     child: ElevatedButton(
                       onPressed: () async {
                         if (await InternetChecker.checkInternetConnection()) {
-                           if(userPhoto==null || imageRecto==null || imageVerso==null){
-                              showNotificationError(context,
+                          if (userPhoto == null ||
+                              imageRecto == null ||
+                              imageVerso == null) {
+                            showNotificationError(context,
                                 "Vous n'avez pas fournir certaines images !");
-                                return ;
-                          }
-                          else {
+                            return;
+                          } else {
                             setState(() {
-                              _isLoading=true;
+                              _isLoading = true;
                             });
                             widget.user.userToken =
-                              await FirebaseMessaging.instance.getToken();
-                          showNotification(context, "Enregistrememt en cours");
-                          //if (widget.user.isFullProvide()) {
-                          UserManager userManager =
-                              UserManager();
-                              print(" User :${widget.user.toString()}");
-                          await userManager.addUser(widget.user);
-                         
-                          if (await FirebaseStorageService().uploadUserFile(
-                                  widget.user,
-                                  userPhoto!,
-                                  imageRecto!,
-                                  imageVerso!) ==
-                              3) {
-                                setState(() {
-                                  _isLoading=false;
-                                });
-                            showNotificationSuccessWithDuration(context,
-                                "Votre demande d'enregistrement a bien été prise en compte sera validée dans un délai de 24h !",30);
-                           
-                            Navigator.pushNamed(context, '/SignIn');
+                                await FirebaseMessaging.instance.getToken();
+                            showNotification(
+                                context, "Enregistrememt en cours");
+                            //if (widget.user.isFullProvide()) {
+                            UserManager userManager = UserManager();
+                            print(" User :${widget.user.toString()}");
+                            await userManager.addUser(widget.user);
+
+                            if (await FirebaseStorageService().uploadUserFile(
+                                    widget.user,
+                                    userPhoto!,
+                                    imageRecto!,
+                                    imageVerso!) ==
+                                3) {
+                              setState(() {
+                                _isLoading = false;
+                              });
+                              showNotificationSuccessWithDuration(
+                                  context,
+                                  "Votre demande d'enregistrement a bien été prise en compte sera validée dans un délai de 24h !",
+                                  30);
+
+                              Navigator.pushNamed(context, '/SignIn');
+                            }
                           }
-                           }
-                            setState(() {
-                                  _isLoading=false;
-                                });
+                          setState(() {
+                            _isLoading = false;
+                          });
                           //}else{
 
                           //}
-                        }else{
-                           showNotificationError(context,
-                                "Pas de connexion internet !");
+                        } else {
+                          showNotificationError(
+                              context, "Pas de connexion internet !");
                         }
                       },
                       child: const Text('Soummettre mes informations'),
@@ -314,8 +323,7 @@ class ImageCamFileState extends State<ImageCamFile> {
               ),
             ),
           ),
-           if (_isLoading)
-            const WaitingOverlay(),
+          if (_isLoading) const WaitingOverlay(),
         ],
       ),
     );
