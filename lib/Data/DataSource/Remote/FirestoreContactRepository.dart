@@ -27,23 +27,26 @@ class FirestoreContactRepository implements ContactRepository {
         (documentSnapshot.data() as Map<String, dynamic>)["messages"];
 
     for (var item in messageData) {
-      Message message = Message(item['message'],
-          MyConverter.convertTimestampToDateTime(item['timestamp']));
+      Message message = Message(
+          item['message'],
+          MyConverter.convertTimestampToDateTime(item['timestamp']),
+          item['userId']);
       messages.add(message);
     }
 
     return Contact(documentSnapshot.id, user1!, user2!, messages);
   }
 
-  List<Message> documentsnapshotToMessage(
-      DocumentSnapshot documentSnapshot) {
+  List<Message> documentsnapshotToMessage(DocumentSnapshot documentSnapshot) {
     List<Message> messages = [];
     List<dynamic> messageData =
         (documentSnapshot.data() as Map<String, dynamic>)["messages"];
 
     for (var item in messageData) {
-      Message message = Message(item['message'],
-          MyConverter.convertTimestampToDateTime(item['timestamp']));
+      Message message = Message(
+          item['message'],
+          MyConverter.convertTimestampToDateTime(item['timestamp']),
+          item['userId']);
       messages.add(message);
     }
     return messages;
@@ -55,7 +58,11 @@ class FirestoreContactRepository implements ContactRepository {
       'user1Id': contact.user1.userId,
       'user2Id': contact.user2.userId,
       'messages': contact.messages
-          .map((m) => {'message': m.message, 'timestamp': m.timestamp})
+          .map((m) => {
+                'message': m.message,
+                'timestamp': m.timestamp,
+                'userId': m.userId
+              })
           .toList()
     }).then((DocumentReference doc) {
       contact.id = doc.id;
@@ -68,10 +75,7 @@ class FirestoreContactRepository implements ContactRepository {
         FirebaseFirestore.instance.collection('contact').doc(contact.id);
     return await docRef.update({
       'messages': FieldValue.arrayUnion([
-        {
-          'message': m.message,
-          'timestamp': m.timestamp,
-        }
+        {'message': m.message, 'timestamp': m.timestamp, 'userId': m.userId}
       ])
     });
   }
@@ -85,7 +89,7 @@ class FirestoreContactRepository implements ContactRepository {
             (snapshot) async => Future.wait(snapshot.docs.map((doc) async {
                   return documentsnapshotToContact(doc);
                 }).toList()));
-                
+
     // var userQuery = _collectionReference
     //     .where('user1Id', isEqualTo: user.userId)
     //     .snapshots()
@@ -111,10 +115,7 @@ class FirestoreContactRepository implements ContactRepository {
 
   @override
   Stream<List<Message>> getMessageofContact(Contact contact) {
-    return _collectionReference
-        .doc(contact.id)
-        .snapshots()
-        .map((doc) {
+    return _collectionReference.doc(contact.id).snapshots().map((doc) {
       return documentsnapshotToMessage(doc);
     });
   }

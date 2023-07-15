@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:transfert_colis_interurbain/App/Manager/ContactManager.dart';
+import 'package:transfert_colis_interurbain/Domain/Model/Contact.dart';
 import '../../../Utils/Converter.dart';
 import '/App/Manager/PackageManager.dart';
 import '/App/Manager/PaymentManager.dart';
@@ -236,6 +238,8 @@ class FirestoreTransfertRepository implements TransfertRepository {
   Future<void> updateTransfertAccept(Transfert transfert) {
     return _collectionReference.doc(transfert.transfertId).update({
       'accept': true,
+    }).then((value) => {
+      ContactManager().addContact(Contact.withoutId(transfert.travel.user, transfert.package.userSender, null))
     });
   }
 

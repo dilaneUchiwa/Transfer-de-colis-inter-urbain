@@ -135,12 +135,12 @@ class ChatPageState extends State<ChatPage> {
     // }
   }
 
-  void onSendMessage(String content, int type) {
+  void onSendMessage(String userId,String content, int type) {
     if (content.trim().isNotEmpty) {
       textEditingController.clear();
 
       ContactManager().addMessage(
-          widget.arguments.contact, Message(content, DateTime.now()));
+          widget.arguments.contact, Message(content, DateTime.now(),userId));
 
       // chatProvider.sendMessage(
       //     content, type, groupChatId, currentUserId, widget.arguments.peerId);
@@ -159,7 +159,7 @@ class ChatPageState extends State<ChatPage> {
     final user = Provider.of<UserApp>(context);
 
     if (message != null) {
-      if (widget.arguments.contact.user1.userId == user.userId) {
+      if (message.userId == user.userId) {
         // Right (my message)
         return Row(
           mainAxisAlignment: MainAxisAlignment.end,
@@ -181,9 +181,9 @@ class ChatPageState extends State<ChatPage> {
         );
       } else {
         UserApp usertemp;
-        user.userId == widget.arguments.contact.user1.userId!
-            ? usertemp = widget.arguments.contact.user2
-            : usertemp = widget.arguments.contact.user1;
+        widget.arguments.contact.user1 == message.userId
+            ? usertemp = widget.arguments.contact.user1
+            : usertemp = widget.arguments.contact.user2;
 
         // Left (peer message)
         return Container(
@@ -382,9 +382,10 @@ class ChatPageState extends State<ChatPage> {
             child: Container(
               child: TextField(
                 onSubmitted: (value) {
-                  onSendMessage(
+                  onSendMessage(widget.arguments.user.userId!,
                     textEditingController.text,
                     TypeMessage.text,
+                    
                   );
                 },
                 style: const TextStyle(
@@ -408,7 +409,7 @@ class ChatPageState extends State<ChatPage> {
               child: IconButton(
                 icon: const Icon(Icons.send),
                 onPressed: () =>
-                    onSendMessage(textEditingController.text, TypeMessage.text),
+                    onSendMessage(widget.arguments.user.userId!,textEditingController.text, TypeMessage.text),
                 color: ColorConstants.primaryColor,
               ),
             ),
@@ -452,5 +453,6 @@ class ChatPageState extends State<ChatPage> {
 
 class ChatPageArguments {
   final Contact contact;
-  ChatPageArguments({required this.contact});
+  final UserApp user;
+  ChatPageArguments({required this.contact,required this.user});
 }

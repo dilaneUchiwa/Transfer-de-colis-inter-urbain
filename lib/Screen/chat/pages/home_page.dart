@@ -345,7 +345,7 @@ class HomePageChatState extends State<HomePageChat> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => ChatPage(
-                    arguments: ChatPageArguments(contact: contact),
+                    arguments: ChatPageArguments(contact: contact,user: currentUser),
                   ),
                 ),
               );

@@ -2,12 +2,14 @@ import '../../Domain/Model/Message.dart';
 import '../../Domain/Model/UserApp.dart';
 
 class Contact{
-  String _id;
+  String? _id;
   UserApp _user1;
   UserApp _user2;
   List<Message>? _messages;
   
   Contact(this._id,this._user1,this._user2,this._messages);
+
+ Contact.withoutId(this._user1,this._user2,this._messages);
 
   List<Message> get messages => _messages!;
 
@@ -27,7 +29,7 @@ class Contact{
     _user1 = value;
   }
 
-  String get id => _id;
+  String get id => _id!;
 
   set id(String value) {
     _id = value;
