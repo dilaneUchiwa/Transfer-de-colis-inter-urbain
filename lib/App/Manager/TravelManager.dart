@@ -25,6 +25,9 @@ class TravelManager {
   Stream<List<Travel>> getCommingTravels() {
     return _firestoreTravelRepository.getCommingTravels();
   }
+  Stream<List<Travel?>> getTravelsWithMotif(String motif) {
+    return _firestoreTravelRepository.getTravelsWithMotif(motif);
+  }
 
   Stream<List<Travel>> getUserTravels(UserApp user) {
     return _firestoreTravelRepository.getUserTravels(user);

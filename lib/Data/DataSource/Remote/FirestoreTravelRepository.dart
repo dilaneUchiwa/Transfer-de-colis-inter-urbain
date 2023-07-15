@@ -31,14 +31,36 @@ class FirestoreTravelRepository implements TravelRepository {
     return travel;
   }
 
+Future<Travel?> documentsnapshotToTravelWithMotif(
+      DocumentSnapshot documentSnapshot,String motif) async {
+    UserManager userManager = UserManager();
+    final user =
+        await userManager.getUserById(documentSnapshot.get('travelUserId'));
+    final travel = Travel(
+        documentSnapshot.id,
+        documentSnapshot.get('townDepature'),
+        documentSnapshot.get('townDestination'),
+        documentSnapshot.get('quarterDepature'),
+        documentSnapshot.get('quarterDestination'),
+        documentSnapshot.get('agence'),
+        MyConverter.convertTimestampToDateTime(
+            documentSnapshot.get('travelDate')),
+        documentSnapshot.get('travelMoment'),
+        user,
+        MyConverter.convertTimestampToDateTime(
+            documentSnapshot.get('timestamp')));
+
+    if(!documentSnapshot.get('townDestination').toString().toUpperCase().startsWith(motif.toUpperCase())) return null;
+    return travel;
+  }
   @override
   Future<void> addTravel(Travel travel) {
     return _collectionReference.add({
       'townDepature': travel.travelDeparture,
       'townDestination': travel.travelDestination,
-      'quarterDepature' : travel.quarterDeparture,
-      'quarterDestination' : travel.quarterDestination,
-      'agence' : travel.agence,
+      'quarterDepature': travel.quarterDeparture,
+      'quarterDestination': travel.quarterDestination,
+      'agence': travel.agence,
       'travelDate': travel.travelDate,
       'travelMoment': travel.travelMoment,
       'travelUserId': travel.user.userId,
@@ -70,6 +92,18 @@ class FirestoreTravelRepository implements TravelRepository {
   }
 
   @override
+  Stream<List<Travel?>> getTravelsWithMotif(String motif) {
+    return _collectionReference
+        //.where("travelDate", isGreaterThanOrEqualTo: DateTime.now())
+        // .orderBy("timestamp", descending: true)
+        .snapshots()
+        .asyncMap(
+            (snapshot) async => Future.wait(snapshot.docs.map((doc) async {
+                  return await documentsnapshotToTravelWithMotif(doc,motif);
+                }).toList()));
+  }
+
+  @override
   Stream<List<Travel>> getUserTravels(UserApp user) {
     return _collectionReference
         //.where("travelDate", isGreaterThanOrEqualTo: DateTime.now())
@@ -97,11 +131,11 @@ class FirestoreTravelRepository implements TravelRepository {
   @override
   Future<void> updateTravel(Travel travel) {
     return _collectionReference.doc(travel.travelId).update({
-     'townDepature': travel.travelDeparture,
+      'townDepature': travel.travelDeparture,
       'townDestination': travel.travelDestination,
-      'quarterDepature' : travel.quarterDeparture,
-      'quarterDestination' : travel.quarterDestination,
-      'agence' : travel.agence,
+      'quarterDepature': travel.quarterDeparture,
+      'quarterDestination': travel.quarterDestination,
+      'agence': travel.agence,
       'travelDate': travel.travelDate,
       'travelMoment': travel.travelMoment,
       'travelUserId': travel.user.userId,
