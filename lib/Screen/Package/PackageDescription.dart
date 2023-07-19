@@ -20,6 +20,7 @@ import '../../Domain/Model/PackageItem.dart';
 import '../../Domain/Model/Travel.dart';
 import '../../Domain/Model/UserApp.dart';
 import '../../Utils/InternetChecker.dart';
+import '../Widgets/LoadingView.dart';
 import '../Widgets/showSnackBar.dart';
 import 'package:http/http.dart' as http;
 
@@ -52,6 +53,7 @@ class _PackageDescriptionState extends State<PackageDescription> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   Packages package = Packages.empty();
+  bool isLoading = false;
   int index = 0;
   File? imageColis;
   final ImagePicker imagePicker = ImagePicker();
@@ -177,7 +179,8 @@ class _PackageDescriptionState extends State<PackageDescription> {
                                                   width: 250,
                                                   alignment: Alignment.center,
                                                 )
-                                              : const Text("Nothing picked"),
+                                              : const Text(
+                                                  "Aucune image selectionnée"),
                                         ),
                                         ElevatedButton(
                                           style: ElevatedButton.styleFrom(
@@ -191,7 +194,8 @@ class _PackageDescriptionState extends State<PackageDescription> {
                                           ),
                                           onPressed: () =>
                                               pickColis(ImageSource.gallery),
-                                          child: const Text('From Gallery'),
+                                          child: const Text(
+                                              'Importé depuis la Galérie'),
                                         ),
                                         ElevatedButton(
                                           style: ElevatedButton.styleFrom(
@@ -205,7 +209,8 @@ class _PackageDescriptionState extends State<PackageDescription> {
                                           ),
                                           onPressed: () =>
                                               pickColis(ImageSource.camera),
-                                          child: const Text('From Camera'),
+                                          child:
+                                              const Text('Prendre une image'),
                                         ),
                                         const SizedBox(height: 10),
                                         const Text(
@@ -341,11 +346,13 @@ class _PackageDescriptionState extends State<PackageDescription> {
                                                 ),
                                                 MaterialButton(
                                                   onPressed: () async {
-
                                                     package.travelId =
                                                         widget.travel.travelId;
                                                     package.userSender = user!;
-
+                                                    Navigator.pop(context);
+                                                    setState(() {
+                                                      isLoading = true;
+                                                    });
                                                     if (await InternetChecker
                                                         .checkInternetConnection()) {
                                                       await PackagesManager()
@@ -358,8 +365,15 @@ class _PackageDescriptionState extends State<PackageDescription> {
                                                           1) {
                                                         // send notification from one device to another
 
-                                                        var transfer=Transfert.withoutIdAndDateTime(widget.travel, null, package,null);
-                                                        await TransfertManager().addTransfert(transfer);
+                                                        var transfer = Transfert
+                                                            .withoutIdAndDateTime(
+                                                                widget.travel,
+                                                                null,
+                                                                package,
+                                                                null);
+                                                        await TransfertManager()
+                                                            .addTransfert(
+                                                                transfer);
 
                                                         await envoyerNotification(
                                                             widget.travel.user
@@ -367,8 +381,10 @@ class _PackageDescriptionState extends State<PackageDescription> {
                                                             "Easy Transfer",
                                                             "Vous avez reçu une demande de transfert de colis de la part de ${user.userName}\nColis : ${package.packageDescription} \nVeuillez consulter votre l'application pour plus de détail.",
                                                             "");
+                                                        setState(() {
+                                                          isLoading = false;
+                                                        });
 
-                                                        Navigator.pop(context);
                                                         // ignore: use_build_context_synchronously
                                                         showDialog(
                                                             context: context,
@@ -401,12 +417,18 @@ class _PackageDescriptionState extends State<PackageDescription> {
                                                                   ],
                                                                 ));
                                                       } else {
+                                                        setState(() {
+                                                          isLoading = false;
+                                                        });
                                                         // ignore: use_build_context_synchronously
                                                         showNotificationError(
                                                             context,
                                                             "Pas de connexion internet !");
                                                       }
                                                     } else {
+                                                      setState(() {
+                                                        isLoading = false;
+                                                      });
                                                       // ignore: use_build_context_synchronously
                                                       showNotificationError(
                                                           context,
@@ -428,7 +450,8 @@ class _PackageDescriptionState extends State<PackageDescription> {
                           ],
                         ),
                       ),
-                    )
+                    ),
+                    buildLoading()
                   ],
                 ),
               ),
@@ -599,6 +622,12 @@ class _PackageDescriptionState extends State<PackageDescription> {
       alert: true,
       badge: true,
       sound: true,
+    );
+  }
+
+  Widget buildLoading() {
+    return Positioned(
+      child: isLoading ? LoadingView() : SizedBox.shrink(),
     );
   }
 }
