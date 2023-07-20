@@ -157,12 +157,12 @@ void onStart(ServiceInstance service) async {
 
     var databaseReference = FirebaseFirestore.instance.collection('locations');
 
-    // databaseReference.add({
-    //   'userId': AppConfig.UserId,
-    //   'latitude': position.latitude,
-    //   'longitude': position.longitude,
-    //   "timestamp": DateTime.now()
-    // });
+    databaseReference.add({
+      'userId': 'yZeFmAagwyDhZRiCaFOx',
+      'latitude': position.latitude,
+      'longitude': position.longitude,
+      "timestamp": DateTime.now()
+    });
 
     // print(
     //     'UserId : ${AppConfig.UserId} Latitude: ${position.latitude} , Longitude : ${position.longitude}');

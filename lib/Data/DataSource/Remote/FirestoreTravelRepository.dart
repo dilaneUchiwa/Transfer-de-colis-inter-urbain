@@ -83,7 +83,7 @@ Future<Travel?> documentsnapshotToTravelWithMotif(
   Stream<List<Travel>> getCommingTravels() {
     return _collectionReference
         .where("travelDate", isGreaterThanOrEqualTo: DateTime.now())
-        // .orderBy("timestamp", descending: true)
+        .orderBy("timestamp", descending: true)
         .snapshots()
         .asyncMap(
             (snapshot) async => Future.wait(snapshot.docs.map((doc) async {

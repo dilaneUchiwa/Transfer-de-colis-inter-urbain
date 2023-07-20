@@ -32,11 +32,11 @@ class MyConverter {
     int differenceInDays = date.difference(now).inDays;
     DateFormat formatter = DateFormat('dd-MM-yyyy');
 
-    if (differenceInDays == 0) {
+    if (differenceInDays == -1) {
       return 'Aujourd\'hui (${formatter.format(date)})';
-    } else if (differenceInDays == 1) {
+    } else if (differenceInDays == 0) {
       return 'Demain (${formatter.format(date)})';
-    } else if (differenceInDays == 2) {
+    } else if (differenceInDays == 1) {
       return 'Après-demain (${formatter.format(date)})';
     } else {
       return 'le (${formatter.format(date)})';

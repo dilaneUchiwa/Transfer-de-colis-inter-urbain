@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:transfert_colis_interurbain/App/Service/Authentification.dart';
+import 'package:transfert_colis_interurbain/Utils/Crypto.dart';
 import '../../../Domain/Model/UserApp.dart';
 import '../../../Domain/Repositories/UserRepository.dart';
 import '../../../Utils/Converter.dart';
@@ -46,7 +47,7 @@ class FirestoreUserRepository implements UserRepository {
       'userPhoto': user.userPhoto,
       'userTelephoneNumber': user.userTelephoneNumber,
       'userEmail': user.userEmail,
-      'userPassword': user.userPassword,
+      'userPassword': hashedPassword(user.userPassword!),
       'userToken': user.userToken,
       'createdAt': now,
       'modifiedAt': null,
@@ -56,7 +57,7 @@ class FirestoreUserRepository implements UserRepository {
       user.userId = doc.id;
       user.createdAt = now;
       AuthentificationService()
-          .signUpWithEmailAndPassword(user.userEmail!, user.userPassword!);
+          .signUpWithEmailAndPassword(user.userEmail!,hashedPassword(user.userPassword!));
     });
   }
 

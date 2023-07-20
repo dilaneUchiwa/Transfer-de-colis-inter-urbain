@@ -14,8 +14,10 @@ import 'package:transfert_colis_interurbain/Domain/Model/Packages.dart';
 import 'package:transfert_colis_interurbain/Domain/Model/Transfert.dart';
 import 'package:transfert_colis_interurbain/Screen/Package/PackageElementItem.dart';
 import 'package:transfert_colis_interurbain/Screen/Notification/NotificationServices.dart';
+import '../../App/Manager/ContactManager.dart';
 import '../../App/Manager/PackageManager.dart';
 import '../../App/Service/FirebaseStorage.dart';
+import '../../Domain/Model/Contact.dart';
 import '../../Domain/Model/PackageItem.dart';
 import '../../Domain/Model/Travel.dart';
 import '../../Domain/Model/UserApp.dart';
@@ -300,7 +302,7 @@ class _PackageDescriptionState extends State<PackageDescription> {
                                                         const SizedBox(
                                                             height: 30),
                                                         Text(
-                                                          "${package.packageValue}",
+                                                          "",
                                                           style: const TextStyle(
                                                               fontSize: 14,
                                                               fontStyle:
@@ -374,6 +376,8 @@ class _PackageDescriptionState extends State<PackageDescription> {
                                                         await TransfertManager()
                                                             .addTransfert(
                                                                 transfer);
+
+                                                        await ContactManager().addContact(Contact.withoutId(widget.travel.user, package.userSender, []));
 
                                                         await envoyerNotification(
                                                             widget.travel.user

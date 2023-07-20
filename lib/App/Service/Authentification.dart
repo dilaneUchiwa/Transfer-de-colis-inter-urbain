@@ -3,6 +3,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:transfert_colis_interurbain/Config/AppConfig.dart';
 import 'package:transfert_colis_interurbain/Domain/Model/UserApp.dart';
+import 'package:transfert_colis_interurbain/Utils/Crypto.dart';
 
 import '../../Data/DataSource/Remote/FirestoreUserRepository.dart';
 import '../Manager/UserManager.dart';
@@ -69,16 +70,19 @@ class AuthentificationService {
     try {
       final user = await UserManager().getUserByEmail(email);
 
+      if (!checkPassword(password, user!.userPassword)) {
+        return false;
+      }
+      password = user.userPassword!;
 
       var result = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
-        
-      
-      if (user != null && result==null) {
+
+      if (user != null && result == null) {
         AuthentificationService()
             .signUpWithEmailAndPassword(user.userEmail!, user.userPassword!);
-             result = await _auth.signInWithEmailAndPassword(
-          email: email, password: password);
+        result = await _auth.signInWithEmailAndPassword(
+            email: email, password: password);
       }
       if (result.user != null) {
         final userApp = await UserManager().getUserByEmail(result.user!.email!);
